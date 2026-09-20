@@ -36,8 +36,10 @@ exports.handler = async (event) => {
   }
 
   if (!GEMINI_API_KEY) {
+    console.error('[ai-proxy] GEMINI_API_KEY is missing from process.env');
     return json(500, { error: 'GEMINI_API_KEY is not set in this site\'s Netlify environment variables.' });
   }
+  console.log('[ai-proxy] key present, length:', GEMINI_API_KEY.length);
 
   let body;
   try {
@@ -71,10 +73,12 @@ exports.handler = async (event) => {
     );
     const data = await upstream.json().catch(() => ({}));
     if (!upstream.ok) {
+      console.error('[ai-proxy] upstream error', upstream.status, JSON.stringify(data).slice(0, 500));
       return json(upstream.status, {
         error: (data && data.error && data.error.message) || 'Gemini API request failed.',
       });
     }
+    console.log('[ai-proxy] upstream ok, status', upstream.status);
 
     const candidate = (data.candidates || [])[0];
     const text = ((candidate && candidate.content && candidate.content.parts) || [])
@@ -85,6 +89,7 @@ exports.handler = async (event) => {
     if (!text) {
       // e.g. the response was blocked by a safety filter (finishReason: "SAFETY")
       const reason = candidate && candidate.finishReason;
+      console.error('[ai-proxy] no text in response, finishReason:', reason, JSON.stringify(data).slice(0, 500));
       return json(502, { error: 'Gemini returned no text' + (reason ? ' (' + reason + ').' : '.') });
     }
 
@@ -94,6 +99,7 @@ exports.handler = async (event) => {
       try {
         parsed = JSON.parse(cleaned);
       } catch (e) {
+        console.error('[ai-proxy] JSON.parse failed on model output:', cleaned.slice(0, 500));
         return json(502, { error: 'Model did not return valid JSON.' });
       }
       return json(200, { result: parsed });
@@ -101,6 +107,7 @@ exports.handler = async (event) => {
 
     return json(200, { text });
   } catch (e) {
+    console.error('[ai-proxy] threw:', e && e.stack || e);
     return json(502, { error: String((e && e.message) || e) });
   }
 };
