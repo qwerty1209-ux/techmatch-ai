@@ -33,6 +33,7 @@ exports.handler = async (event) => {
   }
 
   if (!PARALLEL_API_KEY) {
+    console.error('[parallel-proxy] PARALLEL_API_KEY is missing from process.env');
     return json(500, {
       error: {
         code: 'missing_api_key',
@@ -40,6 +41,7 @@ exports.handler = async (event) => {
       },
     });
   }
+  console.log('[parallel-proxy] key present, length:', PARALLEL_API_KEY.length);
 
   let body;
   try {
@@ -49,6 +51,7 @@ exports.handler = async (event) => {
   }
 
   const { tool, args } = body || {};
+  console.log('[parallel-proxy] tool:', tool, 'args:', JSON.stringify(args).slice(0, 300));
   if (!args || typeof args !== 'object') {
     return json(400, { error: { code: 'bad_request', message: 'Missing args.' } });
   }
@@ -71,6 +74,7 @@ exports.handler = async (event) => {
       });
       const data = await upstream.json().catch(() => ({}));
       if (!upstream.ok) {
+        console.error('[parallel-proxy] search upstream error', upstream.status, JSON.stringify(data).slice(0, 500));
         return json(upstream.status, {
           error: {
             code: upstream.status === 401 || upstream.status === 403 ? 'needs_reauth'
@@ -79,6 +83,7 @@ exports.handler = async (event) => {
           },
         });
       }
+      console.log('[parallel-proxy] search ok, results:', (data.results || []).length);
       return json(200, data);
     }
 
@@ -100,6 +105,7 @@ exports.handler = async (event) => {
       });
       const data = await upstream.json().catch(() => ({}));
       if (!upstream.ok) {
+        console.error('[parallel-proxy] extract upstream error', upstream.status, JSON.stringify(data).slice(0, 500));
         return json(upstream.status, {
           error: {
             code: upstream.status === 401 || upstream.status === 403 ? 'needs_reauth'
@@ -108,11 +114,13 @@ exports.handler = async (event) => {
           },
         });
       }
+      console.log('[parallel-proxy] extract ok, results:', (data.results || []).length);
       return json(200, data);
     }
 
     return json(400, { error: { code: 'bad_request', message: 'Unknown tool: ' + tool } });
   } catch (e) {
+    console.error('[parallel-proxy] threw:', e && e.stack || e);
     return json(502, { error: { code: 'server_unavailable', message: String((e && e.message) || e) } });
   }
 };
