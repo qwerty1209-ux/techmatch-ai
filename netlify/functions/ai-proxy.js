@@ -9,17 +9,10 @@
 // fallback with:
 //   POST body: { input: string, json: boolean, modelTier?: string }
 //
-// This is the extraction/explanation layer used by extractProductsFromWeb(),
-// aiReason() and aiParseNL() in index.html — it only ever rephrases or
-// extracts facts it's given, never invents new ones (the instruction to do
-// that lives in index.html's prompts, unchanged).
-//
-// json:false -> returns { text }              (matches sample(input) -> {text})
-// json:true  -> returns { result: <parsed> }  (matches sample.json(input) -> JSON)
+// json:false -> returns { text }
+// json:true  -> returns { result: <parsed> }
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-// Free-tier model as of writing. If Google renames/retires it, swap this for
-// whatever AI Studio's free-tier page currently lists (aistudio.google.com).
 const MODEL = 'gemini-2.5-flash';
 
 function json(statusCode, obj) {
@@ -87,7 +80,6 @@ exports.handler = async (event) => {
       .trim();
 
     if (!text) {
-      // e.g. the response was blocked by a safety filter (finishReason: "SAFETY")
       const reason = candidate && candidate.finishReason;
       console.error('[ai-proxy] no text in response, finishReason:', reason, JSON.stringify(data).slice(0, 500));
       return json(502, { error: 'Gemini returned no text' + (reason ? ' (' + reason + ').' : '.') });
