@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechMatch AI — Find the right PC or laptop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1F3EF;
+  --surface:#FFFFFF;
+  --ink:#12192B;
+  --ink-muted:#586074;
+  --ink-faint:#8B93A3;
+  --line:#CDD3C7;
+  --line-soft:#E2E6DD;
+  --signal:#0F7A6C;
+  --signal-ink:#0B5A50;
+  --signal-soft:#E1F0EC;
+  --alert:#A85A17;
+  --alert-soft:#F4E7D8;
+  --danger:#A3312A;
+  --danger-soft:#F5E2E0;
+  --radius:3px;
+  --font-display:'Space Grotesk',sans-serif;
+  --font-body:'IBM Plex Sans',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+  --shadow:none;
+  --focus:2px solid #2F6FED;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11151C; --surface:#171C25; --ink:#EDEFEC; --ink-muted:#A7AEBB; --ink-faint:#727A88;
+    --line:#2B3140; --line-soft:#232936; --signal:#3FCBB2; --signal-ink:#8CE7D6; --signal-soft:#123832;
+    --alert:#E0A25E; --alert-soft:#3A2A14; --danger:#E28C84; --danger-soft:#3A1E1C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11151C; --surface:#171C25; --ink:#EDEFEC; --ink-muted:#A7AEBB; --ink-faint:#727A88;
+  --line:#2B3140; --line-soft:#232936; --signal:#3FCBB2; --signal-ink:#8CE7D6; --signal-soft:#123832;
+  --alert:#E0A25E; --alert-soft:#3A2A14; --danger:#E28C84; --danger-soft:#3A1E1C;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--font-body);
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;}
+button{font-family:inherit;}
+:focus-visible{outline:var(--focus); outline-offset:2px;}
+.wrap{max-width:1120px; margin:0 auto; padding:0 24px;}
+@media(max-width:640px){.wrap{padding:0 16px;}}
+
+/* ---------- header ---------- */
+header.site{
+  position:sticky; top:0; z-index:40; background:var(--bg);
+  border-bottom:1px solid var(--line); backdrop-filter:blur(6px);
+}
+.nav-row{display:flex; align-items:center; justify-content:space-between; height:64px; gap:20px;}
+.brand{font-family:var(--font-display); font-weight:700; font-size:19px; letter-spacing:-0.01em; display:flex; align-items:center; gap:8px; cursor:pointer; background:none; border:none; color:var(--ink); padding:0;}
+.brand .dot{width:8px; height:8px; border-radius:50%; background:var(--signal); display:inline-block;}
+nav.main-links{display:flex; gap:4px; align-items:center;}
+nav.main-links a{
+  font-size:14px; color:var(--ink-muted); text-decoration:none; padding:8px 12px; border-radius:var(--radius);
+}
+nav.main-links a:hover, nav.main-links a.active{color:var(--ink); background:var(--line-soft);}
+.cta-btn{
+  background:var(--ink); color:var(--bg); border:none; padding:10px 18px; border-radius:var(--radius);
+  font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap;
+}
+.cta-btn:hover{background:var(--signal-ink); color:#fff;}
+.cta-ghost{background:transparent; border:1px solid var(--line); color:var(--ink); padding:10px 18px; border-radius:var(--radius); font-size:14px; font-weight:600; cursor:pointer;}
+.cta-ghost:hover{border-color:var(--ink);}
+.hamburger{display:none; background:none; border:1px solid var(--line); border-radius:var(--radius); padding:8px 10px; cursor:pointer; color:var(--ink);}
+@media(max-width:820px){
+  nav.main-links{display:none;}
+  .hamburger{display:block;}
+}
+.mobile-menu{display:none; flex-direction:column; padding:8px 0 16px; border-top:1px solid var(--line);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{padding:12px 4px; text-decoration:none; color:var(--ink); border-bottom:1px solid var(--line-soft); font-size:15px;}
+
+/* ---------- generic layout ---------- */
+main{min-height:70vh;}
+section{padding:64px 0;}
+section.tight{padding:40px 0;}
+h1,h2,h3,h4{font-family:var(--font-display); font-weight:600; margin:0 0 12px; letter-spacing:-0.01em;}
+h1{font-size:44px; line-height:1.08; font-weight:700;}
+h2{font-size:28px;}
+h3{font-size:19px;}
+p{margin:0 0 14px; color:var(--ink-muted); max-width:62ch;}
+.lede{font-size:18px; color:var(--ink-muted); max-width:52ch;}
+.mono{font-family:var(--font-mono);}
+.hr{border:none; border-top:1px solid var(--line); margin:0;}
+
+/* ---------- hero ---------- */
+.hero{padding:72px 0 56px; display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center;}
+@media(max-width:900px){.hero{grid-template-columns:1fr; padding:40px 0;}}
+.hero-actions{display:flex; gap:12px; margin-top:28px; flex-wrap:wrap;}
+.hero-note{margin-top:22px; font-size:13px; color:var(--ink-faint); display:flex; gap:8px; align-items:flex-start;}
+.hero-note svg{flex:none; margin-top:2px;}
+
+.scan-panel{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px;
+  font-family:var(--font-mono); font-size:12.5px; color:var(--ink-muted); position:relative; overflow:hidden;
+}
+.scan-panel .title{font-family:var(--font-body); font-weight:600; color:var(--ink); font-size:13px; margin-bottom:14px; display:flex; justify-content:space-between;}
+.scan-line{display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px dashed var(--line-soft); gap:10px;}
+.scan-line:last-child{border-bottom:none;}
+.scan-line .chk{color:var(--signal); font-weight:600; flex:none;}
+.scan-line.pending .chk{color:var(--ink-faint);}
+.blink{animation:blink 1.2s steps(1) infinite;}
+@keyframes blink{50%{opacity:.15;}}
+
+/* ---------- process ---------- */
+.process-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:36px;}
+@media(max-width:820px){.process-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:520px){.process-grid{grid-template-columns:1fr;}}
+.process-cell{background:var(--surface); padding:26px 22px;}
+.process-cell .num{font-family:var(--font-mono); color:var(--signal); font-size:13px; margin-bottom:10px;}
+.process-cell h4{font-size:16px; margin-bottom:8px;}
+.process-cell p{font-size:13.5px; margin:0;}
+
+/* ---------- cards / buttons generic ---------- */
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:22px;}
+.btn-primary{background:var(--ink); color:var(--bg); border:none; padding:13px 22px; border-radius:var(--radius); font-weight:600; font-size:14.5px; cursor:pointer;}
+.btn-primary:hover{background:var(--signal-ink); color:#fff;}
+.btn-primary:disabled{opacity:.45; cursor:not-allowed;}
+.btn-secondary{background:transparent; border:1px solid var(--line); color:var(--ink); padding:13px 22px; border-radius:var(--radius); font-weight:600; font-size:14.5px; cursor:pointer;}
+.btn-secondary:hover{border-color:var(--ink);}
+.btn-small{font-size:13px; padding:7px 12px; border-radius:var(--radius); border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;}
+.btn-small:hover{border-color:var(--ink);}
+.chip{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-family:var(--font-mono); padding:3px 9px; border-radius:2px; border:1px solid var(--line); color:var(--ink-muted);}
+.chip.sample{background:var(--alert-soft); border-color:var(--alert); color:var(--alert);}
+.chip.live{background:var(--signal-soft); border-color:var(--signal); color:var(--signal-ink);}
+
+/* ---------- sample data banner ---------- */
+.sample-banner{
+  background:var(--alert-soft); border:1px solid var(--alert); border-radius:var(--radius);
+  padding:12px 16px; font-size:13px; color:var(--ink); display:flex; gap:10px; align-items:flex-start; margin-bottom:28px;
+}
+.sample-banner b{color:var(--alert);}
+.sample-banner a{text-decoration:underline; cursor:pointer;}
+
+/* ---------- wizard ---------- */
+.wizard-shell{max-width:760px; margin:0 auto;}
+.progress-track{display:flex; gap:6px; margin-bottom:36px;}
+.progress-seg{height:3px; flex:1; background:var(--line); border-radius:2px; overflow:hidden;}
+.progress-seg .fill{height:100%; background:var(--signal); width:0%; transition:width .3s;}
+.progress-label{font-family:var(--font-mono); font-size:12px; color:var(--ink-faint); margin-bottom:8px;}
+.step-head{margin-bottom:28px;}
+.choice-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:24px;}
+@media(max-width:560px){.choice-grid{grid-template-columns:1fr;}}
+.choice-card{
+  border:1.5px solid var(--line); border-radius:var(--radius); padding:26px 22px; cursor:pointer; background:var(--surface); text-align:left;
+}
+.choice-card:hover{border-color:var(--ink-faint);}
+.choice-card.selected{border-color:var(--signal); background:var(--signal-soft);}
+.choice-card h4{margin-bottom:4px;}
+.choice-card p{margin:0; font-size:13.5px;}
+.field-row{margin-bottom:20px;}
+.field-row label{display:block; font-size:13px; font-weight:600; color:var(--ink); margin-bottom:8px;}
+.field-row .hint{font-size:12.5px; color:var(--ink-faint); margin-top:6px; margin-bottom:0;}
+input[type=text],input[type=number],textarea,select{
+  width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:var(--radius);
+  font-family:var(--font-body); font-size:14.5px; background:var(--surface); color:var(--ink);
+}
+textarea{resize:vertical; min-height:92px;}
+.budget-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+@media(max-width:560px){.budget-row{grid-template-columns:1fr;}}
+.tag-grid{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;}
+.tag-pill{
+  border:1px solid var(--line); border-radius:20px; padding:8px 15px; font-size:13.5px; cursor:pointer; background:var(--surface); color:var(--ink-muted);
+}
+.tag-pill.selected{border-color:var(--signal); background:var(--signal-soft); color:var(--signal-ink); font-weight:600;}
+.toggle-row{display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-top:1px solid var(--line-soft);}
+.switch{position:relative; width:40px; height:22px; flex:none;}
+.switch input{opacity:0; width:0; height:0;}
+.slider-toggle{position:absolute; inset:0; background:var(--line); border-radius:20px; cursor:pointer; transition:.2s;}
+.slider-toggle:before{content:""; position:absolute; width:16px; height:16px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.2s;}
+input:checked + .slider-toggle{background:var(--signal);}
+input:checked + .slider-toggle:before{transform:translateX(18px);}
+.adv-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+@media(max-width:560px){.adv-grid{grid-template-columns:1fr;}}
+.wizard-nav{display:flex; justify-content:space-between; margin-top:32px; padding-top:24px; border-top:1px solid var(--line);}
+
+/* ---------- research loading ---------- */
+.research-shell{max-width:520px; margin:64px auto; text-align:center;}
+.research-stage{font-family:var(--font-mono); font-size:14px; color:var(--ink-muted); margin:6px 0; opacity:.4;}
+.research-stage.active{color:var(--ink); opacity:1; font-weight:600;}
+.research-stage.done{color:var(--signal); opacity:.75;}
+.research-bar{height:2px; background:var(--line); margin:28px 0; overflow:hidden; border-radius:2px;}
+.research-bar .fill{height:100%; width:0%; background:var(--signal); transition:width .4s;}
+
+/* ---------- results ---------- */
+.results-summary{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px; margin-bottom:8px;}
+.rec-card{
+  border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); padding:26px; margin-bottom:20px;
+}
+.rec-top{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:6px;}
+.rec-rank{font-family:var(--font-mono); color:var(--ink-faint); font-size:13px;}
+.rec-name{font-size:21px; font-family:var(--font-display); font-weight:600; margin:2px 0 4px;}
+.rec-price{font-family:var(--font-mono); font-size:20px; font-weight:600;}
+.match-badge{display:flex; flex-direction:column; align-items:flex-end;}
+.match-pct{font-family:var(--font-mono); font-size:24px; font-weight:600; color:var(--signal-ink);}
+.match-bar{width:110px; height:5px; background:var(--line); border-radius:3px; overflow:hidden; margin-top:6px;}
+.match-bar .fill{height:100%; background:var(--signal);}
+.rec-why{font-size:14.5px; color:var(--ink); background:var(--line-soft); border-left:3px solid var(--signal); padding:12px 15px; margin:14px 0; border-radius:0 var(--radius) var(--radius) 0;}
+.spec-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px 18px; margin:16px 0; font-size:13px;}
+@media(max-width:760px){.spec-grid{grid-template-columns:repeat(2,1fr);}}
+.spec-item .k{color:var(--ink-faint); font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; margin-bottom:2px;}
+.spec-item .v{font-family:var(--font-mono); font-size:13.5px;}
+.fit-cols{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:16px 0;}
+@media(max-width:640px){.fit-cols{grid-template-columns:1fr;}}
+.fit-list{list-style:none; margin:0; padding:0; font-size:13.5px;}
+.fit-list li{padding:4px 0; display:flex; gap:8px;}
+.fit-list.good li:before{content:"✓"; color:var(--signal); font-weight:700;}
+.fit-list.caution li:before{content:"⚠"; color:var(--alert); font-weight:700;}
+.rec-footer{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:16px; padding-top:14px; border-top:1px solid var(--line-soft); font-size:12.5px; color:var(--ink-faint);}
+.rec-actions{display:flex; gap:8px;}
+.source-list{display:flex; gap:8px; flex-wrap:wrap;}
+.refine-row{display:flex; flex-wrap:wrap; gap:8px; margin:32px 0;}
+
+/* ---------- search page ---------- */
+.search-layout{display:grid; grid-template-columns:230px 1fr; gap:32px;}
+@media(max-width:820px){.search-layout{grid-template-columns:1fr;}}
+.filter-block{border-bottom:1px solid var(--line-soft); padding:16px 0;}
+.filter-block h4{font-size:13px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-faint); margin-bottom:10px; font-family:var(--font-body); font-weight:600;}
+.filter-check{display:flex; align-items:center; gap:8px; padding:5px 0; font-size:13.5px;}
+.result-row{display:flex; gap:18px; border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-bottom:14px; background:var(--surface); align-items:flex-start;}
+@media(max-width:600px){.result-row{flex-direction:column;}}
+.result-thumb{width:64px; height:64px; border-radius:var(--radius); background:var(--line-soft); flex:none; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; color:var(--ink-faint);}
+.result-main{flex:1; min-width:0;}
+.result-meta{font-size:13px; color:var(--ink-muted); font-family:var(--font-mono);}
+.result-side{text-align:right; flex:none;}
+@media(max-width:600px){.result-side{text-align:left;}}
+
+/* ---------- compare ---------- */
+.compare-table{width:100%; border-collapse:collapse; font-size:13.5px;}
+.compare-table th,.compare-table td{padding:11px 14px; border-bottom:1px solid var(--line-soft); text-align:left; vertical-align:top;}
+.compare-table th{font-family:var(--font-mono); color:var(--ink-faint); font-weight:500; font-size:12px; text-transform:uppercase; letter-spacing:.02em;}
+.compare-table td.diff{background:var(--signal-soft);}
+.compare-scroll{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius);}
+.remove-x{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:15px;margin-left:6px;}
+
+/* ---------- product detail ---------- */
+.product-hero{display:grid; grid-template-columns:280px 1fr; gap:36px; margin-bottom:36px;}
+@media(max-width:700px){.product-hero{grid-template-columns:1fr;}}
+.product-thumb{aspect-ratio:1; background:var(--line-soft); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); color:var(--ink-faint); font-size:13px; text-align:center; padding:16px;}
+.detail-spec-table{width:100%; border-collapse:collapse; font-size:14px;}
+.detail-spec-table tr{border-bottom:1px solid var(--line-soft);}
+.detail-spec-table td{padding:10px 0;}
+.detail-spec-table td:first-child{color:var(--ink-faint); width:40%; font-size:12.5px; text-transform:uppercase; letter-spacing:.02em;}
+.detail-spec-table td:last-child{font-family:var(--font-mono);}
+.source-tag{font-size:11px; color:var(--ink-faint); font-family:var(--font-mono); margin-left:8px;}
+
+/* ---------- about / architecture ---------- */
+.arch-diagram{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:20px; margin:24px 0;}
+.pipeline-steps{list-style:none; margin:0; padding:0; counter-reset:step;}
+.pipeline-steps li{counter-increment:step; padding:14px 0 14px 40px; position:relative; border-bottom:1px solid var(--line-soft); font-size:14px;}
+.pipeline-steps li:before{content:counter(step); position:absolute; left:0; top:12px; width:24px; height:24px; border:1px solid var(--line); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; color:var(--ink-muted);}
+.pipeline-steps li b{display:block; color:var(--ink); margin-bottom:2px;}
+
+/* ---------- admin ---------- */
+.admin-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:32px;}
+@media(max-width:760px){.admin-grid{grid-template-columns:1fr 1fr;}}
+.admin-stat{border:1px solid var(--line); border-radius:var(--radius); padding:18px; background:var(--surface);}
+.admin-stat .num{font-family:var(--font-mono); font-size:26px; font-weight:600;}
+.admin-stat .lbl{font-size:12.5px; color:var(--ink-faint); margin-top:4px;}
+table.admin-table{width:100%; border-collapse:collapse; font-size:13px;}
+table.admin-table th,table.admin-table td{padding:9px 10px; border-bottom:1px solid var(--line-soft); text-align:left;}
+table.admin-table th{color:var(--ink-faint); font-weight:600; font-size:11.5px; text-transform:uppercase;}
+.status-dot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:6px;}
+.status-dot.ok{background:var(--signal);} .status-dot.warn{background:var(--alert);} .status-dot.fail{background:var(--danger);}
+
+/* ---------- chat ---------- */
+.chat-shell{max-width:640px; margin:0 auto; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); display:flex; flex-direction:column; height:70vh;}
+.chat-log{flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:14px;}
+.msg{max-width:80%; padding:11px 15px; border-radius:10px; font-size:14.5px; line-height:1.5;}
+.msg.user{align-self:flex-end; background:var(--ink); color:var(--bg); border-radius:10px 10px 2px 10px;}
+.msg.bot{align-self:flex-start; background:var(--line-soft); color:var(--ink); border-radius:10px 10px 10px 2px;}
+.chat-input-row{display:flex; gap:8px; padding:14px; border-top:1px solid var(--line);}
+.chat-input-row input{flex:1;}
+.typing{font-family:var(--font-mono); font-size:12.5px; color:var(--ink-faint); padding:0 20px 10px;}
+
+/* ---------- empty / error ---------- */
+.empty-state{text-align:center; padding:60px 20px; border:1px dashed var(--line); border-radius:var(--radius);}
+.empty-state h3{margin-bottom:8px;}
+
+/* ---------- footer ---------- */
+footer.site{border-top:1px solid var(--line); padding:32px 0; margin-top:40px;}
+.footer-row{display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:12.5px; color:var(--ink-faint);}
+.footer-row a{text-decoration:none; color:var(--ink-faint);}
+.footer-row a:hover{color:var(--ink);}
+
+.page{display:none;}
+.page.active{display:block;}
+@media (prefers-reduced-motion: reduce){*{animation:none !important; transition:none !important;}}
+::-webkit-scrollbar{width:9px; height:9px;}
+::-webkit-scrollbar-thumb{background:var(--line); border-radius:6px;}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav-row">
+    <button class="brand" onclick="go('home')" aria-label="TechMatch AI home"><span class="dot"></span>TechMatch AI</button>
+    <nav class="main-links">
+      <a href="#home" onclick="go('home');return false;">Home</a>
+      <a href="#wizard" onclick="go('wizard');return false;">Find My Device</a>
+      <a href="#search" onclick="go('search');return false;">Search</a>
+      <a href="#compare" onclick="go('compare');return false;">Compare</a>
+      <a href="#about" onclick="go('about');return false;">About</a>
+    </nav>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button class="cta-btn" onclick="go('wizard')">Get Recommendation</button>
+      <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
+    </div>
+  </div>
+  <div class="wrap mobile-menu" id="mobileMenu">
+    <a href="#home" onclick="go('home');return false;">Home</a>
+    <a href="#wizard" onclick="go('wizard');return false;">Find My Device</a>
+    <a href="#search" onclick="go('search');return false;">Search Devices</a>
+    <a href="#compare" onclick="go('compare');return false;">Compare</a>
+    <a href="#chat" onclick="go('chat');return false;">Chat Assistant</a>
+    <a href="#about" onclick="go('about');return false;">About</a>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<footer class="site">
+  <div class="wrap footer-row">
+    <span>TechMatch AI — a research &amp; recommendation architecture demo.</span>
+    <div style="display:flex; gap:16px;">
+      <a href="#about" onclick="go('about');return false;">How it works</a>
+      <a href="#admin" onclick="go('admin');return false;">System status</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =========================================================================
+   TECHMATCH AI — CLIENT APPLICATION
+   -------------------------------------------------------------------------
+   Layered like a real system even though it all runs in one static page:
+
+     SearchProvider (data access)  →  RequirementEngine (parse user input)
+        →  ScoringEngine (weighted match against requirements)
+        →  ExplanationEngine (personalized reasoning, optionally AI-assisted)
+        →  UI
+
+   IMPORTANT / HONESTY NOTE
+   This published page has no live internet-research backend: it cannot
+   crawl manufacturer sites or retailer pages in real time. Per its own
+   brief's fallback instructions, it ships with a MockSearchProvider that
+   returns a clearly-labeled illustrative sample catalog, and every screen
+   that shows product data displays a "SAMPLE DATA" indicator plus a
+   "last verified" timestamp explaining that timestamp is simulated.
+   The SearchProvider interface below is written so a real provider
+   (a manufacturer/retailer API, a search+scrape service, etc.) can be
+   dropped in without touching the wizard, scoring, or UI code.
+   ========================================================================= */
+
+/* ---------------------------- utilities -------------------------------- */
+const INR = n => '₹' + Math.round(n).toLocaleString('en-IN');
+const uid = () => Math.random().toString(36).slice(2,9);
+function fmtTime(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) + ', ' +
+         d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+}
+function daysAgoISO(days, hours){
+  const d = new Date(NOW.getTime() - days*86400000 - (hours||0)*3600000);
+  return d.toISOString();
+}
+const NOW = new Date();
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------------------------- sample (AI) capability ----------------------
+   Two possible homes for this app:
+   1) Published as a Claude Artifact -> window.claude exists, so we use
+      Claude's own built-in "sample" capability directly, same as before.
+   2) Deployed anywhere else as a plain static site (this Netlify deploy)
+      -> window.claude does not exist, so we fall back to this site's own
+      Netlify Function (netlify/functions/ai-proxy.js), which holds the
+      real ANTHROPIC_API_KEY server-side and is the only thing that ever
+      sees it. Either way, claudeSample(...) / claudeSample.json(...) have
+      the exact same shape, so aiReason()/aiParseNL()/extractProductsFromWeb()
+      below never had to change. */
+let claudeSample = null;
+async function initSample(){
+  try{
+    if(window.claude && window.claude.use){
+      const native = await window.claude.use('sample');
+      if(native){ claudeSample = native; return; }
+    }
+  }catch(e){ /* fall through to the Netlify Function path below */ }
+
+  claudeSample = async function(input, opts){
+    const r = await fetch('/.netlify/functions/ai-proxy', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({input, json:false, modelTier:(opts&&opts.modelTier)||'quick'})
+    });
+    const data = await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.error || ('ai_proxy_'+r.status));
+    return {text: data.text, truncated:false};
+  };
+  claudeSample.json = async function(input, opts){
+    const r = await fetch('/.netlify/functions/ai-proxy', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({input, json:true, modelTier:(opts&&opts.modelTier)||'quick'})
+    });
+    const data = await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.error || ('ai_proxy_'+r.status));
+    return data.result;
+  };
+}
+initSample();
+
+/* Ask Claude to REPHRASE/REASON over facts we already computed — never to
+   invent new specs, prices or products. Falls back to null on any failure
+   so every caller must have a deterministic template fallback. */
+async function aiReason(promptObj){
+  if(!claudeSample) return null;
+  try{
+    const res = await claudeSample(
+      "You are the explanation layer of a laptop/PC recommendation engine called TechMatch AI. "+
+      "You are given ONLY computed facts (already-verified specs, an already-computed match score, and the user's stated requirements) as JSON. "+
+      "Write the requested short text using ONLY those facts — never invent a spec, price, or capability that is not present in the JSON. "+
+      "Be specific and reference the user's actual stated requirements, not generic praise.\n\nTASK: "+promptObj.task+
+      "\n\nFACTS JSON:\n"+JSON.stringify(promptObj.facts),
+      {modelTier:'quick'}
+    );
+    return res && res.text ? res.text.trim() : null;
+  }catch(e){ return null; }
+}
+async function aiParseNL(text, deviceType){
+  if(!claudeSample) return null;
+  try{
+    const res = claudeSample.json ? await claudeSample.json(
+      "Extract structured laptop/PC shopping requirements from this free-text note. "+
+      "Return strict JSON only, matching this shape: "+
+      '{"minRam":null|number,"minStorage":null|number,"needsDedicatedGpu":null|boolean,"prioritizeBattery":null|boolean,'+
+      '"prioritizePortability":null|boolean,"mentionedSoftware":[],"mentionedActivities":[],"expectedLifespanYears":null|number,"notes":""}'+
+      " Use null where the text does not say. Device type context: "+deviceType+".\n\nTEXT:\n"+text,
+      {modelTier:'quick'}
+    ) : null;
+    return res || null;
+  }catch(e){ return null; }
+}
+
+/* ============================ LIVE WEB RESEARCH (MCP) ====================
+   When the viewer has the "Parallel Search" connector, this is a genuinely
+   live path: web_search finds current candidate pages, web_fetch pulls
+   their content, and the sample capability extracts structured product
+   facts from that real text — never inventing a spec that wasn't in it.
+   Any field the web content didn't state comes back null and the UI shows
+   "Unable to verify currently" rather than guessing. If the connector is
+   absent or a call fails, callers fall back to the sample catalog and say
+   so on screen (see RESEARCH_STAGES / runResearch / the results banner). */
+const LIVE_SERVER = 'Parallel Search';
+let mcpCap = null;
+async function initMcp(){
+  try{
+    if(window.claude && window.claude.use){
+      const native = await window.claude.use('mcp');
+      if(native){ mcpCap = native; return; }
+    }
+  }catch(e){ /* fall through to the Netlify Function path below */ }
+
+  // Netlify fallback: proxy web_search / web_fetch through this site's own
+  // serverless function (netlify/functions/parallel-proxy.js), which holds
+  // the real PARALLEL_API_KEY server-side and calls Parallel's Search API.
+  // callTool()'s signature/return/throw shape matches the native mcp
+  // capability, so liveWebSearch()/liveWebFetch() below never had to change.
+  mcpCap = {
+    callTool: async function(server, tool, args){
+      let r;
+      try{
+        r = await fetch('/.netlify/functions/parallel-proxy', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({tool, args})
+        });
+      }catch(e){
+        const err = new Error('Could not reach the search function.');
+        err.code = 'server_unavailable'; err.retryable = true;
+        throw err;
+      }
+      const data = await r.json().catch(()=>({}));
+      if(!r.ok){
+        const info = (data && data.error) || {};
+        const err = new Error(info.message || ('Search request failed ('+r.status+').'));
+        err.code = info.code || 'upstream_error';
+        err.retryable = r.status===503 || r.status===429;
+        throw err;
+      }
+      return {payload: data};
+    }
+  };
+}
+initMcp();
+
+async function liveWebSearch(objective, queries){
+  if(!mcpCap) return {ok:false, code:'not_granted'};
+  try{
+    const result = await mcpCap.callTool(LIVE_SERVER, 'web_search', {objective, search_queries:queries});
+    return {ok:true, data: result.payload || result};
+  }catch(e){
+    return {ok:false, code:e.code||'upstream_error', message:e.message, retryable:!!e.retryable};
+  }
+}
+async function liveWebFetch(urls, objective, queries){
+  if(!mcpCap) return {ok:false, code:'not_granted'};
+  try{
+    const result = await mcpCap.callTool(LIVE_SERVER, 'web_fetch', {urls, objective, search_queries:queries});
+    return {ok:true, data: result.payload || result};
+  }catch(e){
+    return {ok:false, code:e.code||'upstream_error', message:e.message, retryable:!!e.retryable};
+  }
+}
+/* Turn raw search/fetch text into structured candidates. Strict extraction
+   only — the model is told to use null for anything not explicitly stated. */
+async function extractProductsFromWeb(searchPayload, fetchPayload, req){
+  if(!claudeSample || !claudeSample.json) return null;
+  const raw = JSON.stringify({search:searchPayload, fetched:fetchPayload}).slice(0, 14000);
+  try{
+    const json = await claudeSample.json(
+      "You are extracting REAL product candidates from raw web search/fetch results for a "+req.deviceType+" shopping tool (India, INR pricing). "+
+      "Only include products explicitly named in the content below. For each field, use the value ONLY if it is explicitly stated in the text — otherwise use null. "+
+      "NEVER estimate, infer, round, or invent a spec or price that isn't written in the text. "+
+      "Return a JSON array (max 12 items) of objects shaped exactly: "+
+      '{"name":string,"brand":string|null,"price":number|null,"cpu":string|null,"gpu":string|null,"ram":number|null,"storage":number|null,"storageType":string|null,"availability":string|null,"sourceUrl":string,"sourceTitle":string}'+
+      "\n\nRAW CONTENT:\n"+raw,
+      {modelTier:'quick'}
+    );
+    return Array.isArray(json) ? json : null;
+  }catch(e){ return null; }
+}
+function normalizeLiveProduct(x, deviceType){
+  const specKnown = [x.cpu, x.gpu, x.ram].filter(v=>v!==null && v!==undefined).length;
+  return {
+    id: 'live-'+uid(), name: x.name || 'Unnamed device', brand: x.brand || (x.name?String(x.name).split(' ')[0]:'Unknown'),
+    type: deviceType, price: (typeof x.price==='number')?x.price:null,
+    cpu: x.cpu||null, gpu: x.gpu||null, ram: x.ram||null, storage: x.storage||null, storageType: x.storageType||null,
+    display:null, battery:null, weight:null, os:null, ports:[], upgradeRam:null, upgradeStorage:null,
+    tags:[], release:null, availability: x.availability||null,
+    sources:[{label:x.sourceTitle||'Web source', url:x.sourceUrl||'#'}],
+    verifiedAt: NOW.toISOString(), priceCheckedAt: NOW.toISOString(),
+    confidence:{spec: specKnown>=3?'medium':(specKnown>=1?'low':'low'), price: x.price?'medium':'low', availability: x.availability?'low':'unknown'},
+    drawbacks:[], liveSourced:true,
+  };
+}
+/* Runs the live path end-to-end; returns {ok:true, products} or {ok:false, code, message, retryable}. */
+async function performLiveResearch(req){
+  const purposeLabel = req.purposes.map(p=>PURPOSE_META[p]?.label||p).join(' + ');
+  const budgetLabel = req.budgetMax ? `under ₹${req.budgetMax}` : '';
+  const q1 = `${req.deviceType} ${purposeLabel} ${budgetLabel} India`.replace(/\s+/g,' ').trim();
+  const q2 = `best ${req.deviceType} for ${purposeLabel} price India 2026`.replace(/\s+/g,' ').trim();
+  const sres = await liveWebSearch(`Find current ${req.deviceType} models suited for ${purposeLabel}, priced ${budgetLabel} in India, with specs and prices.`, [q1,q2]);
+  if(!sres.ok) return sres;
+  const results = (sres.data.results||[]).slice(0,8);
+  if(!results.length) return {ok:false, code:'no_candidates', message:'No web results returned.'};
+  const urls = results.map(r=>r.url).slice(0,4);
+  let fetchPayload = null;
+  const fres = await liveWebFetch(urls, `Extract product name, CPU, GPU, RAM, storage and price for ${req.deviceType}s`, [q1]);
+  if(fres.ok) fetchPayload = fres.data;
+  const extracted = await extractProductsFromWeb(sres.data, fetchPayload, req);
+  if(!extracted || !extracted.length) return {ok:false, code:'extraction_failed', message:'Could not extract structured product data from the search results.'};
+  return {ok:true, products: extracted.map(x=>normalizeLiveProduct(x, req.deviceType))};
+}
+
+/* ============================ SAMPLE CATALOG ============================
+   Illustrative only — brand/model names are used the way a search-results
+   page would, but exact specs/prices below are NOT live-verified data.
+   In production this entire block is replaced by SearchProvider calls. */
+const SAMPLE_PRODUCTS = [
+{id:'lt-legion5',name:'Lenovo Legion 5 (AMD/RTX)',brand:'Lenovo',type:'laptop',price:96990,
+ cpu:'AMD Ryzen 7 8845HS',gpu:'NVIDIA RTX 4060 8GB',ram:16,storage:512,storageType:'NVMe SSD',
+ display:{size:15.6,resolution:'2560×1600',refresh:165,panel:'IPS',nits:500},
+ battery:80,weight:2.4,os:'Windows 11 Home',ports:['USB-C (Thunderbolt-capable)','2× USB-A 3.2','HDMI 2.1','Ethernet','3.5mm'],
+ upgradeRam:true,upgradeStorage:true,tags:['gaming','video-editing','programming'],release:2025,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.lenovo.com'},{label:'Retailer',url:'https://www.amazon.in'}],
+ verifiedAt:daysAgoISO(0,2), priceCheckedAt:daysAgoISO(0,1), confidence:{spec:'high',price:'high',availability:'medium'},
+ drawbacks:['Fan noise ramps up quickly under sustained load','Chassis and charger add real weight for daily carry']},
+{id:'lt-victus15',name:'HP Victus 15',brand:'HP',type:'laptop',price:64990,
+ cpu:'Intel Core i5-13420H',gpu:'NVIDIA RTX 3050 6GB',ram:16,storage:512,storageType:'NVMe SSD',
+ display:{size:15.6,resolution:'1920×1080',refresh:144,panel:'IPS',nits:250},
+ battery:70,weight:2.29,os:'Windows 11 Home',ports:['USB-C','2× USB-A','HDMI','Ethernet'],
+ upgradeRam:true,upgradeStorage:true,tags:['gaming','student','general'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.hp.com'},{label:'Retailer',url:'https://www.flipkart.com'}],
+ verifiedAt:daysAgoISO(1,4), priceCheckedAt:daysAgoISO(0,6), confidence:{spec:'high',price:'high',availability:'high'},
+ drawbacks:['Screen brightness is modest for bright rooms or outdoor use','Build is mostly plastic']},
+{id:'lt-macbookair15',name:'Apple MacBook Air 15" (M3)',brand:'Apple',type:'laptop',price:134900,
+ cpu:'Apple M3 (8-core)',gpu:'Apple M3 10-core GPU',ram:16,storage:512,storageType:'NVMe SSD',
+ display:{size:15.3,resolution:'2880×1864',refresh:60,panel:'Liquid Retina IPS',nits:500},
+ battery:66.5,weight:1.51,os:'macOS',ports:['2× Thunderbolt/USB-C','MagSafe','3.5mm'],
+ upgradeRam:false,upgradeStorage:false,tags:['programming','student','office','content-creation'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.apple.com'},{label:'Retailer',url:'https://www.amazon.in'}],
+ verifiedAt:daysAgoISO(0,5), priceCheckedAt:daysAgoISO(0,3), confidence:{spec:'high',price:'high',availability:'high'},
+ drawbacks:['RAM and storage are fixed at purchase — no later upgrade','Not ideal for AAA gaming or CUDA-based ML workflows']},
+{id:'lt-swift14',name:'Acer Swift 14 AI',brand:'Acer',type:'laptop',price:79990,
+ cpu:'Intel Core Ultra 7 155H',gpu:'Intel Arc integrated',ram:16,storage:1024,storageType:'NVMe SSD',
+ display:{size:14,resolution:'2880×1800',refresh:120,panel:'OLED',nits:400},
+ battery:65,weight:1.28,os:'Windows 11 Home',ports:['2× USB-C (Thunderbolt 4)','USB-A','HDMI'],
+ upgradeRam:false,upgradeStorage:true,tags:['programming','student','office','general'],release:2025,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.acer.com'},{label:'Retailer',url:'https://www.reliancedigital.in'}],
+ verifiedAt:daysAgoISO(2,1), priceCheckedAt:daysAgoISO(0,8), confidence:{spec:'high',price:'medium',availability:'medium'},
+ drawbacks:['Integrated graphics limit gaming and GPU-accelerated workloads','RAM is soldered — buy the config you will need long-term']},
+{id:'lt-thinkpadT14',name:'Lenovo ThinkPad T14 Gen 5',brand:'Lenovo',type:'laptop',price:98500,
+ cpu:'Intel Core Ultra 5 125U',gpu:'Intel integrated graphics',ram:16,storage:512,storageType:'NVMe SSD',
+ display:{size:14,resolution:'1920×1200',refresh:60,panel:'IPS',nits:300},
+ battery:57,weight:1.38,os:'Windows 11 Pro',ports:['2× Thunderbolt 4','2× USB-A','HDMI','Ethernet'],
+ upgradeRam:true,upgradeStorage:true,tags:['programming','office','business'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.lenovo.com'},{label:'Retailer',url:'https://www.croma.com'}],
+ verifiedAt:daysAgoISO(3,0), priceCheckedAt:daysAgoISO(0,10), confidence:{spec:'high',price:'medium',availability:'high'},
+ drawbacks:['No dedicated GPU — skip if gaming or GPU compute matters','60Hz display feels dated next to gaming-oriented rivals']},
+{id:'lt-zephyrusG14',name:'ASUS ROG Zephyrus G14',brand:'ASUS',type:'laptop',price:159990,
+ cpu:'AMD Ryzen 9 8945HS',gpu:'NVIDIA RTX 4070 8GB',ram:32,storage:1024,storageType:'NVMe SSD',
+ display:{size:14,resolution:'2880×1800',refresh:120,panel:'OLED',nits:500},
+ battery:73,weight:1.63,os:'Windows 11 Home',ports:['2× USB-C (one Thunderbolt)','2× USB-A','HDMI 2.1'],
+ upgradeRam:false,upgradeStorage:true,tags:['gaming','video-editing','ai-ml','content-creation'],release:2025,availability:'Limited',
+ sources:[{label:'Manufacturer',url:'https://www.asus.com'},{label:'Retailer',url:'https://www.amazon.in'}],
+ verifiedAt:daysAgoISO(1,9), priceCheckedAt:daysAgoISO(0,4), confidence:{spec:'high',price:'medium',availability:'medium'},
+ drawbacks:['Premium pricing for the portability/performance combination','Thermals get warm on the keyboard deck under sustained load']},
+{id:'lt-galaxybook4',name:'Samsung Galaxy Book4 Pro',brand:'Samsung',type:'laptop',price:129990,
+ cpu:'Intel Core Ultra 7 155H',gpu:'Intel Arc integrated',ram:16,storage:512,storageType:'NVMe SSD',
+ display:{size:14,resolution:'2880×1800',refresh:120,panel:'AMOLED',nits:400},
+ battery:63,weight:1.17,os:'Windows 11 Home',ports:['2× Thunderbolt 4','USB-A','HDMI'],
+ upgradeRam:false,upgradeStorage:false,tags:['student','office','content-creation','general'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.samsung.com'},{label:'Retailer',url:'https://www.samsung.com/in/shop'}],
+ verifiedAt:daysAgoISO(4,3), priceCheckedAt:daysAgoISO(0,7), confidence:{spec:'high',price:'medium',availability:'high'},
+ drawbacks:['No dedicated GPU limits gaming and heavy 3D/ML work','RAM/storage fixed at purchase']},
+{id:'lt-ideapadgaming',name:'Lenovo LOQ 15',brand:'Lenovo',type:'laptop',price:69990,
+ cpu:'Intel Core i5-13450HX',gpu:'NVIDIA RTX 4050 6GB',ram:16,storage:512,storageType:'NVMe SSD',
+ display:{size:15.6,resolution:'1920×1080',refresh:144,panel:'IPS',nits:300},
+ battery:60,weight:2.4,os:'Windows 11 Home',ports:['USB-C','2× USB-A','HDMI','Ethernet'],
+ upgradeRam:true,upgradeStorage:true,tags:['gaming','student'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.lenovo.com'},{label:'Retailer',url:'https://www.flipkart.com'}],
+ verifiedAt:daysAgoISO(1,1), priceCheckedAt:daysAgoISO(0,2), confidence:{spec:'high',price:'high',availability:'high'},
+ drawbacks:['Battery life drops fast under gaming load','Chassis runs warm without an external cooling pad']},
+{id:'lt-xps13',name:'Dell XPS 13',brand:'Dell',type:'laptop',price:114990,
+ cpu:'Intel Core Ultra 7 155H',gpu:'Intel Arc integrated',ram:16,storage:512,storageType:'NVMe SSD',
+ display:{size:13.4,resolution:'1920×1200',refresh:60,panel:'IPS',nits:500},
+ battery:55,weight:1.23,os:'Windows 11 Home',ports:['2× Thunderbolt 4'],
+ upgradeRam:false,upgradeStorage:false,tags:['student','office','programming','general'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.dell.com'},{label:'Retailer',url:'https://www.amazon.in'}],
+ verifiedAt:daysAgoISO(5,2), priceCheckedAt:daysAgoISO(0,11), confidence:{spec:'medium',price:'medium',availability:'medium'},
+ drawbacks:['Only two ports — plan on a dongle','No dedicated GPU']},
+{id:'lt-predatorhelios',name:'Acer Predator Helios Neo 16',brand:'Acer',type:'laptop',price:139990,
+ cpu:'Intel Core i9-14900HX',gpu:'NVIDIA RTX 4070 8GB',ram:32,storage:1024,storageType:'NVMe SSD',
+ display:{size:16,resolution:'2560×1600',refresh:165,panel:'IPS',nits:500},
+ battery:90,weight:2.6,os:'Windows 11 Home',ports:['USB-C (Thunderbolt)','3× USB-A','HDMI 2.1','Ethernet'],
+ upgradeRam:true,upgradeStorage:true,tags:['gaming','video-editing','ai-ml'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.acer.com'},{label:'Retailer',url:'https://www.vijaysales.com'}],
+ verifiedAt:daysAgoISO(2,7), priceCheckedAt:daysAgoISO(0,5), confidence:{spec:'high',price:'medium',availability:'medium'},
+ drawbacks:['Heavy for daily carry','Fans are audible under full load']},
+{id:'lt-macbookpro14',name:'Apple MacBook Pro 14" (M4 Pro)',brand:'Apple',type:'laptop',price:249900,
+ cpu:'Apple M4 Pro (12-core)',gpu:'Apple M4 Pro 16-core GPU',ram:24,storage:512,storageType:'NVMe SSD',
+ display:{size:14.2,resolution:'3024×1964',refresh:120,panel:'Liquid Retina XDR (mini-LED)',nits:1000},
+ battery:72.4,weight:1.55,os:'macOS',ports:['3× Thunderbolt 5','HDMI','SD card','3.5mm'],
+ upgradeRam:false,upgradeStorage:false,tags:['video-editing','content-creation','ai-ml','programming'],release:2025,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.apple.com'},{label:'Retailer',url:'https://www.apple.com/in/shop'}],
+ verifiedAt:daysAgoISO(0,3), priceCheckedAt:daysAgoISO(0,1), confidence:{spec:'high',price:'high',availability:'high'},
+ drawbacks:['Premium price for the segment','Limited native support for CUDA-only ML tooling']},
+{id:'lt-tuf-a15',name:'ASUS TUF Gaming A15',brand:'ASUS',type:'laptop',price:74990,
+ cpu:'AMD Ryzen 7 7735HS',gpu:'NVIDIA RTX 4050 6GB',ram:16,storage:512,storageType:'NVMe SSD',
+ display:{size:15.6,resolution:'1920×1080',refresh:144,panel:'IPS',nits:250},
+ battery:90,weight:2.2,os:'Windows 11 Home',ports:['USB-C','2× USB-A','HDMI','Ethernet'],
+ upgradeRam:true,upgradeStorage:true,tags:['gaming','student'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.asus.com'},{label:'Retailer',url:'https://www.amazon.in'}],
+ verifiedAt:daysAgoISO(1,6), priceCheckedAt:daysAgoISO(0,3), confidence:{spec:'high',price:'high',availability:'high'},
+ drawbacks:['Screen colour coverage is average for creative work','Plastic build feels less premium than rivals']},
+{id:'dt-precision3660',name:'Dell Precision Tower (Custom)',brand:'Dell',type:'desktop',price:189990,
+ cpu:'Intel Core i7-14700',gpu:'NVIDIA RTX 4070 Ti 12GB',ram:32,storage:1024,storageType:'NVMe SSD',
+ display:null,battery:null,weight:null,os:'Windows 11 Pro',
+ ports:['Multiple USB-A/C','HDMI','DisplayPort ×3','Ethernet'],formFactor:'Tower',
+ upgradeRam:true,upgradeStorage:true,tags:['ai-ml','video-editing','cad','3d-modeling','programming'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.dell.com'},{label:'Retailer',url:'https://www.dell.com/en-in'}],
+ verifiedAt:daysAgoISO(2,4), priceCheckedAt:daysAgoISO(0,9), confidence:{spec:'high',price:'medium',availability:'medium'},
+ drawbacks:['Monitor, keyboard and mouse sold separately','Large tower needs desk space and good airflow']},
+{id:'dt-prebuilt-gaming',name:'HP OMEN 25L Gaming Desktop',brand:'HP',type:'desktop',price:129990,
+ cpu:'AMD Ryzen 7 7700X',gpu:'NVIDIA RTX 4060 Ti 16GB',ram:16,storage:1024,storageType:'NVMe SSD',
+ display:null,battery:null,weight:null,os:'Windows 11 Home',
+ ports:['Multiple USB-A/C','HDMI','DisplayPort ×2','Ethernet'],formFactor:'Mid-tower',
+ upgradeRam:true,upgradeStorage:true,tags:['gaming','streaming','video-editing'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.hp.com'},{label:'Retailer',url:'https://www.amazon.in'}],
+ verifiedAt:daysAgoISO(1,3), priceCheckedAt:daysAgoISO(0,2), confidence:{spec:'high',price:'high',availability:'high'},
+ drawbacks:['Stock cooler is adequate but not silent under load','No monitor included']},
+{id:'dt-mini-office',name:'Lenovo ThinkCentre Neo 50q (Mini)',brand:'Lenovo',type:'desktop',price:49990,
+ cpu:'Intel Core i5-13500T',gpu:'Intel integrated graphics',ram:16,storage:512,storageType:'NVMe SSD',
+ display:null,battery:null,weight:null,os:'Windows 11 Pro',
+ ports:['USB-A/C','HDMI','DisplayPort','Ethernet'],formFactor:'Mini / SFF',
+ upgradeRam:true,upgradeStorage:true,tags:['office','business','general'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.lenovo.com'},{label:'Retailer',url:'https://www.croma.com'}],
+ verifiedAt:daysAgoISO(3,6), priceCheckedAt:daysAgoISO(0,12), confidence:{spec:'high',price:'high',availability:'high'},
+ drawbacks:['No dedicated GPU — not for gaming or GPU compute','Limited internal expansion room due to compact case']},
+{id:'dt-mac-mini-m4',name:'Apple Mac mini (M4)',brand:'Apple',type:'desktop',price:59900,
+ cpu:'Apple M4 (10-core)',gpu:'Apple M4 10-core GPU',ram:16,storage:256,storageType:'NVMe SSD',
+ display:null,battery:null,weight:null,os:'macOS',
+ ports:['3× Thunderbolt 4','HDMI','2× USB-A','Ethernet'],formFactor:'Mini',
+ upgradeRam:false,upgradeStorage:false,tags:['programming','office','content-creation','general'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.apple.com'},{label:'Retailer',url:'https://www.apple.com/in/shop'}],
+ verifiedAt:daysAgoISO(0,8), priceCheckedAt:daysAgoISO(0,4), confidence:{spec:'high',price:'high',availability:'high'},
+ drawbacks:['Base storage is tight for large media libraries','No upgrade path after purchase; monitor sold separately']},
+{id:'dt-workstation-cad',name:'HP Z2 Tower G9 Workstation',brand:'HP',type:'desktop',price:249990,
+ cpu:'Intel Core i9-14900',gpu:'NVIDIA RTX 4000 SFF Ada 20GB',ram:64,storage:2048,storageType:'NVMe SSD',
+ display:null,battery:null,weight:null,os:'Windows 11 Pro',
+ ports:['Multiple USB-A/C','DisplayPort ×4','Ethernet'],formFactor:'Tower',
+ upgradeRam:true,upgradeStorage:true,tags:['cad','3d-modeling','architecture','ai-ml','video-editing'],release:2024,availability:'Limited',
+ sources:[{label:'Manufacturer',url:'https://www.hp.com'},{label:'Retailer',url:'https://www.hp.com/in-en'}],
+ verifiedAt:daysAgoISO(4,1), priceCheckedAt:daysAgoISO(0,10), confidence:{spec:'high',price:'low',availability:'low'},
+ drawbacks:['High upfront cost for individual buyers','Workstation-grade parts mean a longer restock lead time']},
+{id:'lt-budget-student',name:'ASUS Vivobook 15',brand:'ASUS',type:'laptop',price:42990,
+ cpu:'Intel Core i3-1315U',gpu:'Intel integrated graphics',ram:8,storage:512,storageType:'NVMe SSD',
+ display:{size:15.6,resolution:'1920×1080',refresh:60,panel:'IPS',nits:250},
+ battery:42,weight:1.7,os:'Windows 11 Home',ports:['USB-C','2× USB-A','HDMI'],
+ upgradeRam:true,upgradeStorage:true,tags:['student','office','general'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.asus.com'},{label:'Retailer',url:'https://www.flipkart.com'}],
+ verifiedAt:daysAgoISO(2,2), priceCheckedAt:daysAgoISO(0,6), confidence:{spec:'high',price:'high',availability:'high'},
+ drawbacks:['8GB RAM will feel tight within 1–2 years for heavier multitasking','No dedicated GPU']},
+{id:'lt-creator-pro16',name:'ASUS ProArt Studiobook 16',brand:'ASUS',type:'laptop',price:189990,
+ cpu:'Intel Core i9-13980HX',gpu:'NVIDIA RTX 4070 8GB',ram:32,storage:1024,storageType:'NVMe SSD',
+ display:{size:16,resolution:'3840×2400',refresh:120,panel:'OLED (100% DCI-P3)',nits:550},
+ battery:90,weight:2.4,os:'Windows 11 Pro',ports:['Thunderbolt 4','USB-A ×3','HDMI','SD card'],
+ upgradeRam:true,upgradeStorage:true,tags:['video-editing','photo-editing','3d-modeling','content-creation'],release:2024,availability:'Limited',
+ sources:[{label:'Manufacturer',url:'https://www.asus.com'},{label:'Retailer',url:'https://www.amazon.in'}],
+ verifiedAt:daysAgoISO(3,3), priceCheckedAt:daysAgoISO(0,9), confidence:{spec:'high',price:'medium',availability:'low'},
+ drawbacks:['Heavy at 2.4kg for a "portable" creator laptop','Priced at a premium versus general-purpose alternatives']},
+{id:'lt-music-ultrabook',name:'Lenovo Yoga Slim 7',brand:'Lenovo',type:'laptop',price:84990,
+ cpu:'AMD Ryzen 7 8845HS',gpu:'AMD Radeon 780M integrated',ram:16,storage:1024,storageType:'NVMe SSD',
+ display:{size:14.5,resolution:'2880×1800',refresh:90,panel:'OLED',nits:400},
+ battery:70,weight:1.42,os:'Windows 11 Home',ports:['2× USB-C','USB-A','HDMI'],
+ upgradeRam:false,upgradeStorage:true,tags:['music-production','student','office','general'],release:2024,availability:'In stock',
+ sources:[{label:'Manufacturer',url:'https://www.lenovo.com'},{label:'Retailer',url:'https://www.amazon.in'}],
+ verifiedAt:daysAgoISO(1,7), priceCheckedAt:daysAgoISO(0,3), confidence:{spec:'high',price:'high',availability:'high'},
+ drawbacks:['Integrated graphics only — skip for gaming or GPU compute','RAM fixed at purchase']},
+];
+
+/* ============================ SEARCH PROVIDER ============================
+   Interface any real backend would implement. MockSearchProvider below
+   fulfils it from SAMPLE_PRODUCTS with a simulated network delay so the
+   research-animation UI behaves like a real async pipeline. Swap this
+   object out (or point it at a real API) without changing callers. */
+/* Live-sourced products aren't in SAMPLE_PRODUCTS, so product detail/compare
+   pages resolve through this registry (seeded from the sample catalog,
+   topped up whenever a live search surfaces new candidates). */
+const productRegistry = {};
+SAMPLE_PRODUCTS.forEach(p=> productRegistry[p.id]=p);
+function registerProducts(list){ list.forEach(p=> productRegistry[p.id]=p); }
+function findProductById(id){ return productRegistry[id] || null; }
+
+const SearchProvider = {
+  async findCandidates(criteria){
+    await delay(350);
+    return SAMPLE_PRODUCTS.filter(p => p.type === criteria.deviceType);
+  },
+  async verifySpecs(product){ await delay(80); return product; },
+  async checkPrice(product){ await delay(60); return {price:product.price, checkedAt:product.priceCheckedAt}; },
+  async textSearch(query, filters){
+    await delay(300);
+    const q = query.toLowerCase();
+    return SAMPLE_PRODUCTS.filter(p=>{
+      if(filters.deviceType && filters.deviceType!=='any' && p.type!==filters.deviceType) return false;
+      if(filters.maxPrice && p.price>filters.maxPrice) return false;
+      if(filters.brand && p.brand!==filters.brand) return false;
+      if(!q) return true;
+      const hay = (p.name+' '+p.brand+' '+p.cpu+' '+p.gpu+' '+p.tags.join(' ')).toLowerCase();
+      return q.split(/\s+/).every(tok=> hay.includes(tok) || matchesNumericQuery(tok,p));
+    });
+  }
+};
+function matchesNumericQuery(tok,p){
+  const num = parseInt(tok.replace(/[^\d]/g,''));
+  if(!num) return false;
+  if(/ram|gb/.test(tok) && p.ram===num) return true;
+  if(/rtx|gpu/.test(tok) && p.gpu && p.gpu.includes(tok.toUpperCase())) return true;
+  return false;
+}
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* ============================ REQUIREMENT ENGINE ========================= */
+const PURPOSE_META = {
+  gaming:{label:'Gaming'}, student:{label:'College / Student'}, programming:{label:'Programming'},
+  'software-dev':{label:'Software Development'}, 'ai-ml':{label:'AI / Machine Learning'},
+  'data-science':{label:'Data Science'}, 'video-editing':{label:'Video Editing'}, 'photo-editing':{label:'Photo Editing'},
+  '3d-modeling':{label:'3D Modeling'}, cad:{label:'CAD / Engineering'}, architecture:{label:'Architecture'},
+  'content-creation':{label:'Content Creation'}, office:{label:'Office / Productivity'}, business:{label:'Business'},
+  streaming:{label:'Streaming'}, 'music-production':{label:'Music Production'}, general:{label:'General Use'}, other:{label:'Other'}
+};
+/* Dynamic weight profiles per purpose — this is what makes the scoring
+   model different for a gamer vs. a programming student, per the brief. */
+const WEIGHT_PROFILES = {
+  gaming:        {gpu:.30, cpu:.18, ram:.08, storage:.05, display:.14, thermals:.08, battery:.02, portability:.02, value:.13},
+  'ai-ml':       {gpu:.30, cpu:.14, ram:.18, storage:.10, display:.03, thermals:.06, battery:.02, portability:.02, value:.15},
+  'data-science':{gpu:.14, cpu:.22, ram:.22, storage:.10, display:.04, thermals:.04, battery:.05, portability:.05, value:.14},
+  'video-editing':{gpu:.24,cpu:.20, ram:.14, storage:.10, display:.14, thermals:.06, battery:.02, portability:.02, value:.08},
+  'photo-editing':{gpu:.14,cpu:.16, ram:.10, storage:.08, display:.28, thermals:.02, battery:.06, portability:.06, value:.10},
+  '3d-modeling': {gpu:.28, cpu:.20, ram:.16, storage:.08, display:.06, thermals:.06, battery:.02, portability:.02, value:.12},
+  cad:           {gpu:.26, cpu:.22, ram:.16, storage:.08, display:.08, thermals:.04, battery:.02, portability:.02, value:.12},
+  architecture:  {gpu:.24, cpu:.20, ram:.16, storage:.08, display:.10, thermals:.04, battery:.04, portability:.04, value:.10},
+  programming:   {gpu:.04, cpu:.22, ram:.20, storage:.10, display:.08, thermals:.04, battery:.14, portability:.10, value:.08},
+  'software-dev':{gpu:.05, cpu:.22, ram:.20, storage:.10, display:.07, thermals:.04, battery:.13, portability:.10, value:.09},
+  'content-creation':{gpu:.16,cpu:.16, ram:.12, storage:.08, display:.16, thermals:.04, battery:.10, portability:.10, value:.08},
+  streaming:     {gpu:.16, cpu:.22, ram:.14, storage:.08, display:.06, thermals:.06, battery:.04, portability:.04, value:.20},
+  'music-production':{gpu:.02,cpu:.18,ram:.16, storage:.14, display:.04, thermals:.02, battery:.14, portability:.10, value:.20},
+  student:       {gpu:.04, cpu:.14, ram:.14, storage:.08, display:.08, thermals:.02, battery:.22, portability:.18, value:.10},
+  office:        {gpu:.02, cpu:.12, ram:.12, storage:.08, display:.08, thermals:.02, battery:.24, portability:.20, value:.12},
+  business:      {gpu:.02, cpu:.14, ram:.12, storage:.08, display:.08, thermals:.02, battery:.22, portability:.18, value:.14},
+  general:       {gpu:.06, cpu:.16, ram:.14, storage:.10, display:.10, thermals:.04, battery:.16, portability:.14, value:.10},
+  other:         {gpu:.10, cpu:.16, ram:.14, storage:.10, display:.10, thermals:.04, battery:.14, portability:.12, value:.10},
+};
+function blendWeights(purposes){
+  if(!purposes.length) purposes=['general'];
+  const acc = {}; let n=0;
+  purposes.forEach(p=>{
+    const w = WEIGHT_PROFILES[p] || WEIGHT_PROFILES.general; n++;
+    Object.keys(w).forEach(k=> acc[k]=(acc[k]||0)+w[k]);
+  });
+  Object.keys(acc).forEach(k=> acc[k]=acc[k]/n);
+  return acc;
+}
+
+/* ============================ SCORING ENGINE ============================= */
+function gpuTier(gpu){
+  if(!gpu) return 0;
+  const g = gpu.toUpperCase();
+  if(g.includes('4070')||g.includes('4080')||g.includes('4090')||g.includes('M4 PRO')||g.includes('RTX 4000')) return 5;
+  if(g.includes('4060')||g.includes('M3')||g.includes('M4')) return 4;
+  if(g.includes('4050')||g.includes('3050')) return 3;
+  if(g.includes('ARC')||g.includes('RADEON')) return 2;
+  if(g.includes('INTEGRATED')) return 1;
+  return 2;
+}
+function cpuTier(cpu){
+  if(!cpu) return null;
+  const c = cpu.toLowerCase();
+  if(/i9|ryzen 9|m4 pro|ultra 9/.test(c)) return 5;
+  if(/i7|ryzen 7|m3|m4|ultra 7/.test(c)) return 4;
+  if(/i5|ryzen 5|ultra 5/.test(c)) return 3;
+  if(/i3|ryzen 3/.test(c)) return 2;
+  return 2;
+}
+/* Fields a live web extraction couldn't confirm score at a neutral midpoint
+   AND get flagged in `unverified` — never silently treated as if verified. */
+function scoreProduct(p, req, weights){
+  const s = {}; const unverified = [];
+  const gt = gpuTier(p.gpu); s.gpu = p.gpu ? gt/5 : (unverified.push('GPU'), 0.4);
+  const ct = cpuTier(p.cpu); s.cpu = ct!==null ? ct/5 : (unverified.push('CPU'), 0.4);
+  s.ram = (p.ram!=null) ? Math.min(1, p.ram / Math.max(req.minRam||8, 8)) : (unverified.push('RAM'), 0.4);
+  s.storage = (p.storage!=null) ? Math.min(1, p.storage / Math.max(req.minStorage||256, 256)) : (unverified.push('storage'), 0.4);
+  s.display = p.display ? Math.min(1, ((p.display.refresh>=120?.4:.2) + (p.display.nits/600)*.3 + (/OLED|Mini-LED|XDR/i.test(p.display.panel)?.3:.15))) : 0.3;
+  s.thermals = (p.type==='desktop') ? 0.9 : (p.weight!=null ? (p.weight>2.2?0.55:0.7) : 0.5);
+  s.battery = p.battery ? Math.min(1, p.battery/75) : (p.type==='desktop' ? 1 : 0.3);
+  s.portability = p.type==='desktop' ? 0.15 : (p.weight!=null ? Math.max(0, 1-(p.weight-1.1)/1.6) : 0.4);
+  if(p.price!=null && req.budgetMax){
+    const priceRatio = p.price / req.budgetMax;
+    s.value = priceRatio<=1 ? (1 - priceRatio*0.35) : Math.max(0, 1 - (priceRatio-1)*2.2);
+  } else { s.value = 0.4; unverified.push('price'); }
+  let total=0, wsum=0;
+  Object.keys(weights).forEach(k=>{ total += (s[k]||0)*weights[k]; wsum += weights[k]; });
+  let pct = Math.round((total/wsum)*100);
+  pct = Math.max(2, Math.min(99, pct));
+  return {pct, sub:s, unverified};
+}
+function hardConstraintFail(p, req){
+  const reasons=[];
+  const tolerance = req.overBudgetTolerancePct||0;
+  const cap = req.budgetMax * (1+tolerance/100);
+  if(p.price!=null && p.price > cap) reasons.push('over budget'); // unknown price: don't hard-exclude, just flagged unverified in scoring
+  if(req.minRam && p.ram!=null && p.ram < req.minRam) reasons.push('below minimum RAM');
+  if(req.excludeBrands && req.excludeBrands.includes(p.brand)) reasons.push('excluded brand');
+  if(req.needsDedicatedGpu && p.gpu && gpuTier(p.gpu)<3) reasons.push('no dedicated GPU');
+  return reasons;
+}
+
+/* ============================ EXPLANATION (fallback templates) ========== */
+function fallbackWhy(p, req, score){
+  const bits=[];
+  if(p.price!=null) bits.push(`is priced at ${INR(p.price)} against your ${INR(req.budgetMax)} budget`);
+  if(req.purposes.includes('gaming') && p.gpu) bits.push(`its ${p.gpu} handles current games at your target settings`);
+  if((req.purposes.includes('programming')||req.purposes.includes('software-dev')) && p.ram!=null) bits.push(`${p.ram}GB RAM is comfortable for an IDE plus containers/emulators`);
+  if((req.purposes.includes('ai-ml')||req.purposes.includes('data-science')) && p.gpu) bits.push(`the ${p.gpu} gives you local GPU acceleration for models and notebooks`);
+  if((req.purposes.includes('video-editing')||req.purposes.includes('content-creation')) && p.cpu && p.gpu) bits.push(`the ${p.cpu} and ${p.gpu} combination is suited to timeline scrubbing and export`);
+  if(req.prioritizePortability && p.type==='laptop' && p.weight!=null) bits.push(`at ${p.weight}kg it stays easy to carry daily`);
+  if(req.prioritizeBattery && p.battery) bits.push(`the ${p.battery}Wh battery supports a full day away from a charger`);
+  if(bits.length<1 && p.cpu) bits.push(`its ${p.cpu}${p.ram!=null?' / '+p.ram+'GB RAM':''} matches the level of performance your stated use case needs`);
+  if(bits.length<1) bits.push(`matched on the specs that could be confirmed for it — verify remaining details before buying`);
+  return 'This option ' + bits.slice(0,3).join(', ') + '.';
+}
+function fitPoints(p, req, unverified){
+  const good=[], caution=[];
+  if(p.ram!=null) good.push(`${p.ram}GB RAM ${req.minRam? 'meets your '+req.minRam+'GB+ requirement':'covers your workload'}`);
+  if(p.price!=null){
+    if(p.price<=req.budgetMax) good.push(`Priced within your ${INR(req.budgetMax)} budget`); else caution.push(`Slightly above your stated budget`);
+  }
+  if(p.gpu && gpuTier(p.gpu)>=3 && (req.purposes.includes('gaming')||req.purposes.includes('ai-ml')||req.purposes.includes('video-editing'))) good.push(`Dedicated GPU suits your ${PURPOSE_META[req.purposes[0]]?.label||'selected'} workload`);
+  if(p.type==='laptop' && req.prioritizeBattery && p.battery!=null && p.battery<60) caution.push(`Battery capacity is on the lower side for all-day use`);
+  if(p.type==='laptop' && p.weight!=null && p.weight>2.2 && req.prioritizePortability) caution.push(`Heavier than ideal if daily portability matters to you`);
+  if(p.upgradeRam===false && req.purposes.some(x=>['programming','software-dev','ai-ml','data-science'].includes(x))) caution.push(`RAM is fixed at purchase — size it for the long term`);
+  (p.drawbacks||[]).slice(0,2).forEach(d=>caution.push(d));
+  (unverified||[]).forEach(f=>caution.push(`${f.charAt(0).toUpperCase()+f.slice(1)} could not be verified currently — confirm before buying`));
+  if(good.length<1 && p.cpu) good.push(`${p.cpu} for general responsiveness`);
+  if(good.length<1) good.push(`Surfaced by a live search matching your stated requirements`);
+  if(caution.length<1) caution.push(`Double-check current stock and exact configuration before purchase`);
+  return {good:good.slice(0,4), caution:caution.slice(0,4)};
+}
+
+/* ============================ APP STATE / ROUTER ========================= */
+const state = {
+  wizard:{ deviceType:null, budgetMode:'max', budgetMin:null, budgetMax:null, overBudgetToggle:false, overBudgetPct:10,
+            purposes:[], nlText:'', adv:{} },
+  compareIds: JSON.parse(localStorage.getItem('tm_compare')||'[]'),
+  lastResults: [], lastReq:null,
+  chatHistory: [],
+};
+function saveCompare(){ localStorage.setItem('tm_compare', JSON.stringify(state.compareIds)); }
+
+function go(page, params){
+  location.hash = '#'+page + (params?('?'+new URLSearchParams(params).toString()):'');
+}
+window.addEventListener('hashchange', render);
+function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('open'); }
+function currentRoute(){
+  const h = location.hash.replace('#','') || 'home';
+  const [page, qs] = h.split('?');
+  return {page, params:new URLSearchParams(qs||'')};
+}
+function setActiveNav(page){
+  document.querySelectorAll('nav.main-links a').forEach(a=>a.classList.remove('active'));
+  const map={home:0,wizard:1,search:2,compare:3,about:4};
+  const links = document.querySelectorAll('nav.main-links a');
+  if(map[page]!==undefined && links[map[page]]) links[map[page]].classList.add('active');
+}
+
+function render(){
+  document.getElementById('mobileMenu').classList.remove('open');
+  const {page, params} = currentRoute();
+  setActiveNav(page);
+  const app = document.getElementById('app');
+  window.scrollTo(0,0);
+  if(page==='home') return renderHome(app);
+  if(page==='wizard') return renderWizard(app);
+  if(page==='researching') return renderResearching(app);
+  if(page==='results') return renderResults(app);
+  if(page==='search') return renderSearch(app, params);
+  if(page==='compare') return renderCompare(app);
+  if(page==='product') return renderProduct(app, params.get('id'));
+  if(page==='about') return renderAbout(app);
+  if(page==='admin') return renderAdmin(app);
+  if(page==='chat') return renderChat(app);
+  return renderHome(app);
+}
+
+/* ---------------------------- HOME --------------------------------- */
+function renderHome(app){
+  app.innerHTML = `
+  <section class="hero">
+    <div>
+      <h1>Find the right PC or&nbsp;laptop for&nbsp;you.</h1>
+      <p class="lede">Tell us what you need, set your budget, and let TechMatch AI research the current market to find your best options — with full transparency on why.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="go('wizard')">Start Recommendation</button>
+        <button class="btn-secondary" onclick="go('search')">Explore Devices</button>
+      </div>
+      <div class="hero-note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        <span>This preview runs on an illustrative sample catalog rather than a live internet crawl — see <a onclick="go('about')" style="text-decoration:underline;cursor:pointer;">how it works</a> for what a production build adds.</span>
+      </div>
+    </div>
+    <div class="scan-panel" id="heroScan">
+      <div class="title"><span>live_pipeline.log</span><span class="mono" style="font-size:11px;color:var(--ink-faint);">sample mode</span></div>
+      <div id="scanLines"></div>
+    </div>
+  </section>
+
+  <section class="tight">
+    <hr class="hr" style="margin-bottom:48px;">
+    <div class="process-grid">
+      <div class="process-cell"><div class="num">01</div><h4>Tell us what you need</h4><p>Choose PC or laptop, set your budget, and describe your purpose — in your own words or from a list.</p></div>
+      <div class="process-cell"><div class="num">02</div><h4>AI researches</h4><p>The system determines which specs actually matter for your use case, then checks current candidates against them.</p></div>
+      <div class="process-cell"><div class="num">03</div><h4>Get your top 5</h4><p>Five ranked options with a transparent match score, honest trade-offs, and sources for every claim.</p></div>
+      <div class="process-cell"><div class="num">04</div><h4>Compare</h4><p>Shortlist the ones you like and compare them side by side before you decide.</p></div>
+    </div>
+  </section>
+  `;
+  const lines = [
+    'Understanding requirements…','Determining required specifications…','Searching current products…',
+    'Checking prices…','Verifying specifications…','Generating recommendations…'
+  ];
+  const box = document.getElementById('scanLines');
+  let i=0;
+  function tick(){
+    box.innerHTML = lines.map((l,idx)=>{
+      if(idx<i) return `<div class="scan-line"><span>${l}</span><span class="chk">✓ done</span></div>`;
+      if(idx===i) return `<div class="scan-line pending"><span>${l}</span><span class="chk blink">●</span></div>`;
+      return `<div class="scan-line pending" style="opacity:.4"><span>${l}</span><span class="chk">—</span></div>`;
+    }).join('');
+    i = (i+1) % (lines.length+1);
+  }
+  tick();
+  if(window._homeTimer) clearInterval(window._homeTimer);
+  window._homeTimer = setInterval(tick, 1100);
+}
+
+/* ---------------------------- WIZARD --------------------------------- */
+const WIZ_STEPS = ['device','budget','purpose','extra'];
+let wizStepIdx = 0;
+function renderWizard(app){
+  wizStepIdx = 0;
+  paintWizard(app);
+}
+function paintWizard(app){
+  const w = state.wizard;
+  const stepKey = WIZ_STEPS[wizStepIdx];
+  app.innerHTML = `
+    <section>
+      <div class="wizard-shell">
+        <div class="progress-label">Step ${wizStepIdx+1} of ${WIZ_STEPS.length}</div>
+        <div class="progress-track">${WIZ_STEPS.map((s,i)=>`<div class="progress-seg"><div class="fill" style="width:${i<=wizStepIdx?100:0}%"></div></div>`).join('')}</div>
+        <div id="wizStepBody"></div>
+        <div class="wizard-nav">
+          <button class="btn-secondary" id="wizBack" ${wizStepIdx===0?'style="visibility:hidden"':''}>Back</button>
+          <div style="display:flex;gap:10px;">
+            ${wizStepIdx===0?`<button class="btn-secondary" onclick="go('chat')">Chat instead</button>`:''}
+            <button class="btn-primary" id="wizNext">${wizStepIdx===WIZ_STEPS.length-1?'Find My Best Options':'Continue'}</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+  const body = document.getElementById('wizStepBody');
+  if(stepKey==='device') body.innerHTML = stepDeviceHTML(w);
+  if(stepKey==='budget') body.innerHTML = stepBudgetHTML(w);
+  if(stepKey==='purpose') body.innerHTML = stepPurposeHTML(w);
+  if(stepKey==='extra') body.innerHTML = stepExtraHTML(w);
+
+  if(stepKey==='device'){
+    document.getElementById('cardLaptop').onclick = ()=>{ w.deviceType='laptop'; paintWizard(app); };
+    document.getElementById('cardDesktop').onclick = ()=>{ w.deviceType='desktop'; paintWizard(app); };
+  }
+  if(stepKey==='budget'){
+    document.getElementById('budgetMax').oninput = e=> w.budgetMax = parseInt(e.target.value)||null;
+    document.getElementById('budgetMin').oninput = e=> w.budgetMin = parseInt(e.target.value)||null;
+    document.getElementById('overBudgetToggle').onchange = e=>{ w.overBudgetToggle = e.target.checked; document.getElementById('overBudgetPctRow').style.display = e.target.checked?'flex':'none'; };
+    document.getElementById('overBudgetPct').oninput = e=> w.overBudgetPct = parseInt(e.target.value)||0;
+  }
+  if(stepKey==='purpose'){
+    document.querySelectorAll('.tag-pill[data-p]').forEach(el=>{
+      el.onclick = ()=>{
+        const p = el.dataset.p;
+        const idx = w.purposes.indexOf(p);
+        if(idx>=0) w.purposes.splice(idx,1); else w.purposes.push(p);
+        el.classList.toggle('selected');
+      };
+    });
+    document.getElementById('nlText').oninput = e=> w.nlText = e.target.value;
+  }
+  if(stepKey==='extra'){
+    document.querySelectorAll('[data-adv]').forEach(el=>{
+      el.oninput = el.onchange = ()=>{ w.adv[el.dataset.adv] = el.type==='checkbox'?el.checked:el.value; };
+    });
+  }
+
+  document.getElementById('wizBack').onclick = ()=>{ if(wizStepIdx>0){ wizStepIdx--; paintWizard(app);} };
+  document.getElementById('wizNext').onclick = ()=> onWizardNext(app);
+}
+function stepDeviceHTML(w){
+  return `
+  <div class="step-head"><h2>What are you looking to buy?</h2><p>This shapes every question after it.</p></div>
+  <div class="choice-grid">
+    <button class="choice-card ${w.deviceType==='laptop'?'selected':''}" id="cardLaptop"><h4>Laptop</h4><p>Portable computer</p></button>
+    <button class="choice-card ${w.deviceType==='desktop'?'selected':''}" id="cardDesktop"><h4>PC / Desktop</h4><p>Desktop computer</p></button>
+  </div>`;
+}
+function stepBudgetHTML(w){
+  return `
+  <div class="step-head"><h2>What is your budget?</h2><p>Amounts in Indian Rupees (₹). We treat your maximum as a real constraint.</p></div>
+  <div class="budget-row">
+    <div class="field-row"><label>Minimum (optional)</label><input type="number" id="budgetMin" placeholder="e.g. 50000" value="${w.budgetMin||''}"></div>
+    <div class="field-row"><label>Maximum</label><input type="number" id="budgetMax" placeholder="e.g. 80000" value="${w.budgetMax||''}"></div>
+  </div>
+  <div class="toggle-row">
+    <div><b>Allow slightly over budget options</b><div class="hint">Shows a few candidates modestly above your maximum, clearly marked.</div></div>
+    <label class="switch"><input type="checkbox" id="overBudgetToggle" ${w.overBudgetToggle?'checked':''}><span class="slider-toggle"></span></label>
+  </div>
+  <div class="field-row" id="overBudgetPctRow" style="display:${w.overBudgetToggle?'flex':'none'};align-items:center;gap:10px;">
+    <label style="margin:0;">Tolerance</label><input type="number" id="overBudgetPct" value="${w.overBudgetPct}" style="width:80px;"><span class="hint">% over budget</span>
+  </div>`;
+}
+function stepPurposeHTML(w){
+  return `
+  <div class="step-head"><h2>What will you mainly use it for?</h2><p>Pick as many as apply.</p></div>
+  <div class="tag-grid">
+    ${Object.entries(PURPOSE_META).map(([k,v])=>`<button class="tag-pill ${w.purposes.includes(k)?'selected':''}" data-p="${k}">${v.label}</button>`).join('')}
+  </div>
+  <div class="field-row">
+    <label>Describe your usage in your own words (optional)</label>
+    <textarea id="nlText" placeholder="e.g. I need a laptop for engineering college, programming, occasional gaming and video editing.">${w.nlText}</textarea>
+    <p class="hint">TechMatch AI reads this to pick up on details the checkboxes miss — like software you'll run or how long you need it to last.</p>
+  </div>`;
+}
+function stepExtraHTML(w){
+  const a = w.adv;
+  const laptopFields = `
+    <div class="field-row"><label>RAM requirement</label><select data-adv="minRam"><option value="">No preference</option><option value="8" ${a.minRam=='8'?'selected':''}>8GB+</option><option value="16" ${a.minRam=='16'?'selected':''}>16GB+</option><option value="32" ${a.minRam=='32'?'selected':''}>32GB+</option></select></div>
+    <div class="field-row"><label>Storage requirement</label><select data-adv="minStorage"><option value="">No preference</option><option value="256" ${a.minStorage=='256'?'selected':''}>256GB+</option><option value="512" ${a.minStorage=='512'?'selected':''}>512GB+</option><option value="1024" ${a.minStorage=='1024'?'selected':''}>1TB+</option></select></div>
+    <div class="field-row"><label>Portability importance</label><select data-adv="portability"><option value="">No preference</option><option value="high" ${a.portability=='high'?'selected':''}>High — carried daily</option><option value="low" ${a.portability=='low'?'selected':''}>Low — mostly stays put</option></select></div>
+    <div class="field-row"><label>Battery life importance</label><select data-adv="battery"><option value="">No preference</option><option value="high" ${a.battery=='high'?'selected':''}>High — all-day use</option><option value="low" ${a.battery=='low'?'selected':''}>Low — usually plugged in</option></select></div>
+    <div class="field-row"><label>Brand preference</label><input type="text" data-adv="brandPref" placeholder="e.g. Lenovo, Apple" value="${a.brandPref||''}"></div>
+    <div class="field-row"><label>Brand exclusions</label><input type="text" data-adv="brandExclude" placeholder="Brands to avoid" value="${a.brandExclude||''}"></div>
+  `;
+  const desktopFields = `
+    <div class="field-row"><label>Build type</label><select data-adv="buildType"><option value="">No preference</option><option value="prebuilt" ${a.buildType=='prebuilt'?'selected':''}>Pre-built</option><option value="custom" ${a.buildType=='custom'?'selected':''}>Custom-built</option></select></div>
+    <div class="field-row"><label>RAM requirement</label><select data-adv="minRam"><option value="">No preference</option><option value="16" ${a.minRam=='16'?'selected':''}>16GB+</option><option value="32" ${a.minRam=='32'?'selected':''}>32GB+</option><option value="64" ${a.minRam=='64'?'selected':''}>64GB+</option></select></div>
+    <div class="field-row"><label>Monitor required?</label><select data-adv="needsMonitor"><option value="">No preference</option><option value="yes" ${a.needsMonitor=='yes'?'selected':''}>Yes</option><option value="no" ${a.needsMonitor=='no'?'selected':''}>No, I have one</option></select></div>
+    <div class="field-row"><label>Brand preference</label><input type="text" data-adv="brandPref" placeholder="e.g. Dell, HP" value="${a.brandPref||''}"></div>
+    <div class="field-row"><label>Brand exclusions</label><input type="text" data-adv="brandExclude" placeholder="Brands to avoid" value="${a.brandExclude||''}"></div>
+  `;
+  return `
+  <div class="step-head"><h2>Anything more specific?</h2><p>All optional — skip straight to your results if you'd rather.</p></div>
+  <div class="adv-grid">${state.wizard.deviceType==='desktop'?desktopFields:laptopFields}</div>
+  <div class="field-row" style="margin-top:8px;">
+    <label>Anything else we should know?</label>
+    <textarea data-adv="extraNotes" placeholder="e.g. I am a college student. I need it to last at least 4 years, run VS Code and MATLAB, and I also want to play games occasionally.">${a.extraNotes||''}</textarea>
+  </div>`;
+}
+function onWizardNext(app){
+  const w = state.wizard;
+  if(wizStepIdx===0 && !w.deviceType){ alert('Please choose Laptop or PC/Desktop to continue.'); return; }
+  if(wizStepIdx===1 && !w.budgetMax){ alert('Please enter a maximum budget to continue.'); return; }
+  if(wizStepIdx<WIZ_STEPS.length-1){ wizStepIdx++; paintWizard(app); return; }
+  runResearch();
+}
+
+/* ---------------------------- RESEARCH PIPELINE --------------------------------- */
+const RESEARCH_STAGES_LIVE = [
+  'Understanding your requirements', 'Determining required specifications', 'Searching the live web (Parallel Search)',
+  'Extracting specs and prices', 'Verifying against your requirements', 'Comparing candidates', 'Generating your recommendations'
+];
+const RESEARCH_STAGES_SAMPLE = [
+  'Understanding your requirements', 'Determining required specifications', 'Searching sample catalog',
+  'Checking prices', 'Verifying specifications', 'Comparing candidates', 'Generating your recommendations'
+];
+function buildReqFromWizard(){
+  const w = state.wizard;
+  return {
+    deviceType: w.deviceType, budgetMax: w.budgetMax, budgetMin: w.budgetMin,
+    overBudgetTolerancePct: w.overBudgetToggle ? (w.overBudgetPct||0) : 0,
+    purposes: w.purposes.length ? w.purposes : ['general'],
+    minRam: w.adv.minRam?parseInt(w.adv.minRam):null,
+    minStorage: w.adv.minStorage?parseInt(w.adv.minStorage):null,
+    prioritizePortability: w.adv.portability==='high', prioritizeBattery: w.adv.battery==='high',
+    excludeBrands: (w.adv.brandExclude||'').split(',').map(s=>s.trim()).filter(Boolean),
+    preferBrands: (w.adv.brandPref||'').split(',').map(s=>s.trim()).filter(Boolean),
+    needsDedicatedGpu: w.purposes.some(p=>['gaming','ai-ml','video-editing','3d-modeling','cad'].includes(p)),
+    nlText: (w.nlText||'') + (w.adv.extraNotes? ' '+w.adv.extraNotes:''),
+  };
+}
+async function generateExplanations(top5, req){
+  for(const item of top5){
+    item.fit = fitPoints(item.p, req, item.unverified);
+    item.why = fallbackWhy(item.p, req, item.pct);
+    item.aiWhy = false;
+    const ai = await aiReason({
+      task:`Write ONE tight sentence (max 40 words) explaining, in plain conversational language, why this product suits this user. Ground it ONLY in the facts given; if a field is null it was not verified — do not claim a value for it. No marketing language.`,
+      facts:{purposes:req.purposes.map(p=>PURPOSE_META[p]?.label||p), budgetMax:req.budgetMax,
+             product:{name:item.p.name,cpu:item.p.cpu,gpu:item.p.gpu,ram:item.p.ram,storage:item.p.storage,price:item.p.price,weight:item.p.weight,battery:item.p.battery},
+             matchPct:item.pct, fieldsNotVerified:item.unverified}
+    });
+    if(ai){ item.why = ai; item.aiWhy = true; }
+  }
+  return top5;
+}
+/* The one function both the initial run and every "refine" rerun go through.
+   Tries live web search first (if the connector is available), and only
+   falls back to the sample catalog when live search is unavailable or
+   fails — the failure is returned, not hidden, so the UI can be honest
+   about it (see runResearch's error branch). */
+async function computeRecommendations(req){
+  const weights = blendWeights(req.purposes);
+  let candidates, dataMode, liveError = null;
+  if(mcpCap){
+    const live = await performLiveResearch(req);
+    if(live.ok){ candidates = live.products; dataMode = 'live'; }
+    else { liveError = live; }
+  }
+  if(!candidates){
+    candidates = await SearchProvider.findCandidates(req);
+    dataMode = mcpCap ? 'sample-fallback' : 'sample';
+  }
+  registerProducts(candidates);
+  const survivors = candidates.filter(p=>hardConstraintFail(p,req).length===0);
+  let scored = survivors.map(p=>{ const r = scoreProduct(p, req, weights); return {p, pct:r.pct, sub:r.sub, unverified:r.unverified}; });
+  scored.sort((a,b)=>b.pct-a.pct);
+  let top5 = req._altSeed && scored.length>5 ? scored.slice(5,10) : scored.slice(0,5);
+  await generateExplanations(top5, req);
+  return {top5, dataMode, liveError};
+}
+async function runResearchStagedUI(req){
+  go('researching');
+  await new Promise(r=>setTimeout(r,30));
+  const app = document.getElementById('app');
+  const stages = mcpCap ? RESEARCH_STAGES_LIVE : RESEARCH_STAGES_SAMPLE;
+  let stageIdx = 0;
+  function paintStages(){
+    app.innerHTML = `
+      <div class="research-shell">
+        <h2 style="font-size:20px;">Researching your best options</h2>
+        <div class="research-bar"><div class="fill" style="width:${Math.round((stageIdx/stages.length)*100)}%"></div></div>
+        ${stages.map((s,i)=>`<div class="research-stage ${i<stageIdx?'done':(i===stageIdx?'active':'')}">${i<stageIdx?'✓ ':''}${s}${i===stageIdx?'…':''}</div>`).join('')}
+      </div>`;
+  }
+  paintStages();
+  const timer = setInterval(()=>{ if(stageIdx<stages.length-1){ stageIdx++; paintStages(); } }, 550);
+  const result = await computeRecommendations(req);
+  clearInterval(timer); stageIdx = stages.length; paintStages();
+  await new Promise(r=>setTimeout(r,200));
+  state.lastResults = result.top5; state.lastReq = req; state.lastDataMode = result.dataMode; state.lastLiveError = result.liveError;
+  go('results');
+}
+async function runResearch(){
+  const req = buildReqFromWizard();
+  if(req.nlText.trim()){
+    const parsed = await aiParseNL(req.nlText, req.deviceType);
+    if(parsed){
+      if(!req.minRam && parsed.minRam) req.minRam = parsed.minRam;
+      if(!req.minStorage && parsed.minStorage) req.minStorage = parsed.minStorage;
+      if(parsed.prioritizeBattery) req.prioritizeBattery = true;
+      if(parsed.prioritizePortability) req.prioritizePortability = true;
+      if(parsed.needsDedicatedGpu) req.needsDedicatedGpu = true;
+      req.parsedNotes = parsed;
+    }
+  }
+  await runResearchStagedUI(req);
+}
+
+/* ---------------------------- RESULTS --------------------------------- */
+function dataModeBanner(){
+  const mode = state.lastDataMode, err = state.lastLiveError;
+  if(mode==='live'){
+    return `<div class="sample-banner" style="background:var(--signal-soft);border-color:var(--signal);">
+      <span style="color:var(--signal-ink);">●</span>
+      <div><b style="color:var(--signal-ink);">Live web data.</b> These candidates were pulled just now from real web search results (via the Parallel Search connector) and extracted by AI — not a curated catalog. Fields marked "Unable to verify currently" weren't stated in the source content, and prices/availability can change — confirm on the retailer's page before buying.</div>
+    </div>`;
+  }
+  if(mode==='sample-fallback' && err){
+    const reasonMap = {needs_reauth:"Your connection to the search provider needs to be renewed.", server_not_connected:"The search provider isn't connected.", tool_error:"The search provider reported an error.", no_candidates:"The live search returned no usable results for this query.", extraction_failed:"Search results came back but specs/prices could not be reliably extracted.", rate_limited:"The search provider is rate-limiting requests right now."};
+    const reason = reasonMap[err.code] || "We couldn't verify current product information right now.";
+    return `<div class="sample-banner">
+      <span>⚠</span>
+      <div><b>Live search failed — showing sample data instead.</b> ${escapeHtml(reason)} What's below is the illustrative sample catalog, clearly not live-verified.
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-small" onclick="retryLive()">Try Again</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  return `<div class="sample-banner"><span>⚠</span><div><b>Sample data:</b> No live search connector is active, so this scores an illustrative catalog rather than a live web crawl. Prices, specs and "last verified" times below are simulated — see <a onclick="go('about')">how it works</a>, or connect a live search provider from the chat.</div></div>`;
+}
+async function retryLive(){ await runResearchStagedUI(state.lastReq); }
+function renderResults(app){
+  const req = state.lastReq;
+  const results = state.lastResults;
+  if(!req){ app.innerHTML = emptyState('No recommendation yet','Run the wizard to get your top 5 matches.', "go('wizard')", 'Start Recommendation'); return; }
+  if(!results.length){
+    app.innerHTML = `
+      <section>
+        <div class="sample-banner"><span>⚠</span><div><b>We couldn't find a match.</b> Nothing in the candidate pool satisfies your hard constraints (budget, RAM minimum, or brand exclusions). Try relaxing your budget or requirements.</div></div>
+        <button class="btn-primary" onclick="go('wizard')">Adjust my answers</button>
+      </section>`;
+    return;
+  }
+  app.innerHTML = `
+    <section>
+      ${dataModeBanner()}
+      <div class="results-summary">
+        <div>
+          <div class="progress-label mono">${req.deviceType.toUpperCase()} · ${INR(req.budgetMax)} MAX · ${req.purposes.map(p=>PURPOSE_META[p]?.label||p).join(' + ').toUpperCase()}</div>
+          <h2>Your Top ${results.length} Recommendations</h2>
+        </div>
+        <button class="btn-secondary" onclick="go('wizard')">Start over</button>
+      </div>
+      <div id="recList"></div>
+      <div class="step-head"><h3>Want to refine your results?</h3></div>
+      <div class="refine-row">
+        <button class="btn-small" onclick="refine('cheaper')">Lower the price</button>
+        <button class="btn-small" onclick="refine('perf')">Increase performance</button>
+        <button class="btn-small" onclick="refine('battery')">Better battery</button>
+        <button class="btn-small" onclick="refine('light')">Lighter device</button>
+        <button class="btn-small" onclick="refine('display')">Better display</button>
+        <button class="btn-small" onclick="refine('gaming')">Better gaming performance</button>
+        <button class="btn-small" onclick="refine('ram')">More RAM</button>
+        <button class="btn-small" onclick="refine('storage')">More storage</button>
+        <button class="btn-small" onclick="refine('alt')">Show alternatives</button>
+      </div>
+    </section>`;
+  const list = document.getElementById('recList');
+  list.innerHTML = results.map((r,i)=>recCardHTML(r,i)).join('');
+  results.forEach((r,i)=>{
+    document.getElementById('cmp-'+r.p.id).onclick = ()=> toggleCompare(r.p.id, document.getElementById('cmp-'+r.p.id));
+  });
+}
+function specVal(v, unit){ return (v===null||v===undefined) ? '<span style="color:var(--alert);">Unable to verify currently</span>' : (escapeHtml(String(v)) + (unit||'')); }
+function recCardHTML(r, idx){
+  const p = r.p;
+  const inCompare = state.compareIds.includes(p.id);
+  return `
+  <article class="rec-card">
+    <div class="rec-top">
+      <div>
+        <div class="rec-rank">#${idx+1} RECOMMENDATION ${r.aiWhy?'<span class="chip live" style="margin-left:8px;">AI explanation</span>':''} ${p.liveSourced?'<span class="chip live" style="margin-left:6px;">Live source</span>':'<span class="chip sample" style="margin-left:6px;">Sample</span>'}</div>
+        <div class="rec-name">${escapeHtml(p.name)}</div>
+        <div class="rec-price">${p.price!=null?INR(p.price):'<span style="color:var(--alert);font-size:16px;">Price unable to verify currently</span>'}</div>
+      </div>
+      <div class="match-badge">
+        <div class="match-pct">${r.pct}%</div>
+        <div class="progress-label" style="margin:0;">match</div>
+        <div class="match-bar"><div class="fill" style="width:${r.pct}%"></div></div>
+      </div>
+    </div>
+    <div class="rec-why"><b>Why this is recommended:</b> ${escapeHtml(r.why)}</div>
+    <div class="spec-grid">
+      <div class="spec-item"><div class="k">CPU</div><div class="v">${specVal(p.cpu)}</div></div>
+      <div class="spec-item"><div class="k">GPU</div><div class="v">${specVal(p.gpu)}</div></div>
+      <div class="spec-item"><div class="k">RAM</div><div class="v">${specVal(p.ram,'GB')}</div></div>
+      <div class="spec-item"><div class="k">Storage</div><div class="v">${p.storage!=null?specVal(p.storage,'GB')+' '+escapeHtml(p.storageType||''):specVal(null)}</div></div>
+      ${p.display?`<div class="spec-item"><div class="k">Display</div><div class="v">${p.display.size}" ${p.display.resolution} ${p.display.refresh}Hz</div></div>`:''}
+      ${p.battery?`<div class="spec-item"><div class="k">Battery</div><div class="v">${p.battery}Wh</div></div>`:''}
+      ${p.weight?`<div class="spec-item"><div class="k">Weight</div><div class="v">${p.weight}kg</div></div>`:''}
+      ${p.os?`<div class="spec-item"><div class="k">OS</div><div class="v">${escapeHtml(p.os)}</div></div>`:''}
+    </div>
+    <div class="fit-cols">
+      <div><div class="progress-label">Why it fits you</div><ul class="fit-list good">${r.fit.good.map(g=>`<li>${escapeHtml(g)}</li>`).join('')}</ul></div>
+      <div><div class="progress-label">Things to consider</div><ul class="fit-list caution">${r.fit.caution.map(c=>`<li>${escapeHtml(c)}</li>`).join('')}</ul></div>
+    </div>
+    <div class="rec-footer">
+      <div>
+        <div>Specs checked: ${fmtTime(p.verifiedAt)}</div>
+        <div>Price checked: ${fmtTime(p.priceCheckedAt)}</div>
+        <div class="source-list" style="margin-top:6px;">Sources: ${p.sources.map(s=>`<a href="${s.url}" target="_blank" rel="noopener" class="chip">${escapeHtml(s.label)}</a>`).join(' ')}</div>
+      </div>
+      <div class="rec-actions">
+        <button class="btn-small" onclick="go('product',{id:'${p.id}'})">View Details</button>
+        <button class="btn-small" id="cmp-${p.id}">${inCompare?'✓ In compare':'Compare'}</button>
+      </div>
+    </div>
+  </article>`;
+}
+function toggleCompare(id, btn){
+  const idx = state.compareIds.indexOf(id);
+  if(idx>=0){ state.compareIds.splice(idx,1); if(btn) btn.textContent='Compare'; }
+  else{
+    if(state.compareIds.length>=4){ alert('You can compare up to 4 devices at a time.'); return; }
+    state.compareIds.push(id); if(btn) btn.textContent='✓ In compare';
+  }
+  saveCompare();
+}
+async function refine(kind){
+  const req = state.lastReq;
+  if(kind==='cheaper') req.budgetMax = Math.round(req.budgetMax*0.85);
+  if(kind==='ram') req.minRam = (req.minRam||8)+8;
+  if(kind==='storage') req.minStorage = (req.minStorage||256)*2;
+  if(kind==='battery') req.prioritizeBattery = true;
+  if(kind==='light') req.prioritizePortability = true;
+  if(kind==='gaming'){ if(!req.purposes.includes('gaming')) req.purposes.push('gaming'); req.needsDedicatedGpu = true; }
+  if(kind==='perf'){ req.budgetMax = Math.round(req.budgetMax*1.1); req.overBudgetTolerancePct = Math.max(req.overBudgetTolerancePct,10); }
+  if(kind==='display') req.purposes.push('photo-editing');
+  if(kind==='alt') req._altSeed = (req._altSeed||0)+1;
+  await runResearchStagedUI(req);
+}
+
+/* ---------------------------- SEARCH PAGE --------------------------------- */
+let searchFilters = {deviceType:'any', maxPrice:null, brand:null};
+async function renderSearch(app, params){
+  const q = params.get('q') || '';
+  app.innerHTML = `
+    <section>
+      <h2>Search Devices</h2>
+      <p>Try “gaming laptops under ₹90,000”, “16GB RAM laptop for programming”, or a brand like “Lenovo Legion”.</p>
+      <div class="field-row"><input type="text" id="searchBox" placeholder="Search current devices…" value="${escapeHtml(q)}"></div>
+      <div class="search-layout">
+        <div>
+          <div class="filter-block"><h4>Device type</h4>
+            <div class="filter-check"><input type="radio" name="ft" id="fAny" checked><label for="fAny">Any</label></div>
+            <div class="filter-check"><input type="radio" name="ft" id="fLap"><label for="fLap">Laptop</label></div>
+            <div class="filter-check"><input type="radio" name="ft" id="fDesk"><label for="fDesk">PC / Desktop</label></div>
+          </div>
+          <div class="filter-block"><h4>Max price</h4><input type="number" id="fPrice" placeholder="e.g. 90000"></div>
+          <div class="filter-block"><h4>Brand</h4>
+            <select id="fBrand"><option value="">Any</option>${[...new Set(SAMPLE_PRODUCTS.map(p=>p.brand))].map(b=>`<option>${b}</option>`).join('')}</select>
+          </div>
+        </div>
+        <div id="searchResults"><div class="empty-state">Searching…</div></div>
+      </div>
+    </section>`;
+  const box = document.getElementById('searchBox');
+  const run = async ()=>{
+    searchFilters.deviceType = document.getElementById('fLap').checked?'laptop':(document.getElementById('fDesk').checked?'desktop':'any');
+    searchFilters.maxPrice = parseInt(document.getElementById('fPrice').value)||null;
+    searchFilters.brand = document.getElementById('fBrand').value||null;
+    const target = document.getElementById('searchResults');
+    target.innerHTML = '<div class="empty-state">Searching current listings…</div>';
+    const res = await SearchProvider.textSearch(box.value, searchFilters);
+    if(!res.length){ target.innerHTML = emptyState('No matches','Try a broader query or fewer filters.'); return; }
+    target.innerHTML = `<div class="sample-banner" style="margin-bottom:16px;"><span>⚠</span><div>Sample catalog — <b>${res.length}</b> illustrative result${res.length===1?'':'s'} shown.</div></div>` +
+      res.map(p=>searchRowHTML(p)).join('');
+  };
+  ['fAny','fLap','fDesk'].forEach(id=>document.getElementById(id).onchange = run);
+  document.getElementById('fPrice').oninput = debounce(run,400);
+  document.getElementById('fBrand').onchange = run;
+  box.oninput = debounce(run,400);
+  run();
+}
+function searchRowHTML(p){
+  return `<div class="result-row">
+    <div class="result-thumb">${escapeHtml(p.brand)}</div>
+    <div class="result-main">
+      <h4 style="margin-bottom:4px;">${escapeHtml(p.name)}</h4>
+      <div class="result-meta">${escapeHtml(p.cpu)} · ${escapeHtml(p.gpu)} · ${p.ram}GB RAM · ${p.storage}GB</div>
+      <div style="margin-top:6px;"><span class="chip sample">Sample data</span> <span class="chip" style="margin-left:6px;">Verified ${fmtTime(p.verifiedAt)}</span></div>
+    </div>
+    <div class="result-side">
+      <div class="rec-price" style="font-size:18px;">${INR(p.price)}</div>
+      <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap;">
+        <button class="btn-small" onclick="go('product',{id:'${p.id}'})">Details</button>
+        <button class="btn-small" onclick="toggleCompare('${p.id}', this); this.textContent=this.textContent.startsWith('✓')?'Compare':'✓ In compare'">${state.compareIds.includes(p.id)?'✓ In compare':'Compare'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+function debounce(fn,ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
+
+/* ---------------------------- COMPARE --------------------------------- */
+function renderCompare(app){
+  const items = state.compareIds.map(id=>findProductById(id)).filter(Boolean);
+  if(!items.length){ app.innerHTML = emptyState('Nothing to compare yet','Add devices from Search or your recommendation results.', "go('search')", 'Search devices'); return; }
+  const anyLive = items.some(p=>p.liveSourced);
+  const na = v => (v===null||v===undefined) ? 'Unable to verify currently' : v;
+  const rows = [
+    ['Price', p=>p.price!=null?INR(p.price):na(null)],
+    ['Type', p=>p.type],
+    ['CPU', p=>na(p.cpu)],
+    ['GPU', p=>na(p.gpu)],
+    ['RAM', p=>p.ram!=null?p.ram+'GB':na(null)],
+    ['Storage', p=>p.storage!=null?p.storage+'GB '+(p.storageType||''):na(null)],
+    ['Display', p=>p.display?`${p.display.size}" ${p.display.resolution} ${p.display.refresh}Hz`:'—'],
+    ['Battery', p=>p.battery?p.battery+'Wh':'—'],
+    ['Weight', p=>p.weight?p.weight+'kg':'—'],
+    ['Ports', p=>(p.ports&&p.ports.length)?p.ports.join(', '):'—'],
+    ['Upgradeable RAM', p=>p.upgradeRam===true?'Yes':(p.upgradeRam===false?'No':na(null))],
+    ['Upgradeable storage', p=>p.upgradeStorage===true?'Yes':(p.upgradeStorage===false?'No':na(null))],
+    ['Availability', p=>na(p.availability)],
+    ['Last verified', p=>fmtTime(p.verifiedAt)],
+  ];
+  app.innerHTML = `
+  <section>
+    <h2>Compare Devices</h2>
+    ${anyLive?`<div class="sample-banner" style="background:var(--signal-soft);border-color:var(--signal);"><span style="color:var(--signal-ink);">●</span><div>Includes live-sourced device(s) — extracted from real web content just now. "Unable to verify currently" means that field wasn't stated in the source.</div></div>`
+      :`<div class="sample-banner"><span>⚠</span><div>Sample data — specs shown for illustration, not a live verification.</div></div>`}
+    <div class="compare-scroll">
+      <table class="compare-table">
+        <thead><tr><th></th>${items.map(p=>`<th>${escapeHtml(p.name)}<button class="remove-x" onclick="removeCompare('${p.id}')" title="Remove">✕</button></th>`).join('')}</tr></thead>
+        <tbody>
+          ${rows.map(([label,fn])=>{
+            const vals = items.map(fn);
+            const differs = new Set(vals).size>1;
+            return `<tr><th>${label}</th>${vals.map(v=>`<td class="${differs?'diff':''}">${escapeHtml(v)}</td>`).join('')}</tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </section>`;
+}
+function removeCompare(id){ state.compareIds = state.compareIds.filter(x=>x!==id); saveCompare(); renderCompare(document.getElementById('app')); }
+
+/* ---------------------------- PRODUCT DETAIL --------------------------------- */
+function renderProduct(app, id){
+  const p = findProductById(id);
+  if(!p){ app.innerHTML = emptyState('Device not found','It may have come from an earlier live search that has since cleared from this session.', "go('search')", 'Back to search'); return; }
+  const similar = SAMPLE_PRODUCTS.filter(x=>x.id!==p.id && x.type===p.type && (x.tags||[]).some(t=>(p.tags||[]).includes(t))).slice(0,3);
+  const dc = p.confidence || {};
+  app.innerHTML = `
+  <section>
+    ${p.liveSourced?`<div class="sample-banner" style="background:var(--signal-soft);border-color:var(--signal);"><span style="color:var(--signal-ink);">●</span><div>Live-sourced — extracted from real web content just now via the Parallel Search connector. Fields not stated in the source show as unable to verify.</div></div>`
+      :`<div class="sample-banner"><span>⚠</span><div>Sample data — this record is illustrative, not a live-verified listing.</div></div>`}
+    <div class="product-hero">
+      <div class="product-thumb">${escapeHtml(p.brand||'')}<br>${escapeHtml(p.name)}</div>
+      <div>
+        <div class="progress-label">${(p.type||'').toUpperCase()} · ${escapeHtml(p.brand||'Unknown brand')}</div>
+        <h1 style="font-size:30px;">${escapeHtml(p.name)}</h1>
+        <div class="rec-price" style="font-size:26px;margin-bottom:6px;">${p.price!=null?INR(p.price):'<span style="color:var(--alert);font-size:17px;">Unable to verify currently</span>'}</div>
+        <div style="margin-bottom:14px;"><span class="chip ${p.availability==='In stock'?'live':''}">${escapeHtml(p.availability||'Unable to verify currently')}</span> <span class="chip" style="margin-left:6px;">Verified ${fmtTime(p.verifiedAt)}</span></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="toggleCompare('${p.id}',this); this.textContent=this.textContent.startsWith('✓')?'Add to Compare':'✓ Added to Compare'">${state.compareIds.includes(p.id)?'✓ Added to Compare':'Add to Compare'}</button>
+          <button class="btn-secondary" onclick="go('search')">Back to Search</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:36px;">
+      <div>
+        <h3>Full specifications</h3>
+        <table class="detail-spec-table">
+          <tr><td>CPU</td><td>${specVal(p.cpu)}</td></tr>
+          <tr><td>GPU</td><td>${specVal(p.gpu)}</td></tr>
+          <tr><td>RAM</td><td>${specVal(p.ram,'GB')}</td></tr>
+          <tr><td>Storage</td><td>${p.storage!=null?specVal(p.storage,'GB')+' '+escapeHtml(p.storageType||''):specVal(null)}</td></tr>
+          ${p.display?`<tr><td>Display</td><td>${p.display.size}" ${p.display.resolution}, ${p.display.refresh}Hz, ${escapeHtml(p.display.panel)}, ${p.display.nits} nits</td></tr>`:''}
+          ${p.battery?`<tr><td>Battery</td><td>${p.battery}Wh</td></tr>`:''}
+          ${p.weight?`<tr><td>Weight</td><td>${p.weight}kg</td></tr>`:''}
+          ${p.formFactor?`<tr><td>Form factor</td><td>${escapeHtml(p.formFactor)}</td></tr>`:''}
+          <tr><td>Operating system</td><td>${p.os?escapeHtml(p.os):specVal(null)}</td></tr>
+          <tr><td>Ports</td><td>${(p.ports&&p.ports.length)?p.ports.join(', '):specVal(null)}</td></tr>
+          <tr><td>Upgradeable</td><td>RAM: ${p.upgradeRam===true?'Yes':(p.upgradeRam===false?'No':'Unable to verify currently')} · Storage: ${p.upgradeStorage===true?'Yes':(p.upgradeStorage===false?'No':'Unable to verify currently')}</td></tr>
+          <tr><td>Release</td><td>${p.release||specVal(null)}</td></tr>
+        </table>
+
+        <h3 style="margin-top:28px;">Pros &amp; cons</h3>
+        <div class="fit-cols">
+          <div><div class="progress-label">Strengths</div><ul class="fit-list good">${fitPoints(p,{purposes:p.tags||[],budgetMax:(p.price||0)*1.2}).good.map(g=>`<li>${escapeHtml(g)}</li>`).join('')}</ul></div>
+          <div><div class="progress-label">Limitations</div><ul class="fit-list caution">${(p.drawbacks&&p.drawbacks.length?p.drawbacks:['No specific drawbacks recorded — verify fit against your own requirements.']).map(d=>`<li>${escapeHtml(d)}</li>`).join('')}</ul></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h4>Data confidence</h4>
+          <table class="detail-spec-table">
+            <tr><td>Specification confidence</td><td>${dc.spec||'unknown'}</td></tr>
+            <tr><td>Price confidence</td><td>${dc.price||'unknown'}</td></tr>
+            <tr><td>Availability confidence</td><td>${dc.availability||'unknown'}</td></tr>
+            <tr><td>Specifications checked</td><td>${fmtTime(p.verifiedAt)}</td></tr>
+            <tr><td>Price checked</td><td>${fmtTime(p.priceCheckedAt)}</td></tr>
+          </table>
+        </div>
+        <div class="card" style="margin-top:16px;">
+          <h4>Sources</h4>
+          ${(p.sources||[]).map(s=>`<div style="padding:6px 0;"><a href="${s.url}" target="_blank" rel="noopener" class="chip">${escapeHtml(s.label)} ↗</a></div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    ${similar.length?`<h3 style="margin-top:40px;">Similar devices</h3><div>${similar.map(s=>searchRowHTML(s)).join('')}</div>`:''}
+  </section>`;
+}
+
+/* ---------------------------- ABOUT / ARCHITECTURE --------------------------------- */
+function renderAbout(app){
+  app.innerHTML = `
+  <section>
+    <h2>How TechMatch AI works</h2>
+    <p class="lede">A transparent, layered pipeline — built so a real search/data backend can be dropped in without touching the recommendation logic.</p>
+
+    ${mcpCap?`<div class="sample-banner" style="background:var(--signal-soft);border-color:var(--signal);"><span style="color:var(--signal-ink);">●</span><div><b style="color:var(--signal-ink);">Live search connector detected (Parallel Search).</b> When you run the wizard, TechMatch AI genuinely searches the live web and asks Claude to extract structured specs from what it finds — no scraper code, no maintained database. If a live search fails for any reason, it says so and falls back to the sample catalog rather than pretending.</div></div>`
+    :`<div class="sample-banner"><span>⚠</span><div><b>No live search connector is active for you right now.</b> Without one, this runs in sample mode: an illustrative catalog rather than a live web crawl. Connect the Parallel Search (or a similar web-search) MCP connector to your account to make it live for you.</div></div>`}
+
+    <h3>The pipeline</h3>
+    <ol class="pipeline-steps">
+      <li><b>Requirement analysis</b>Your device type, budget, purposes, and free-text notes are converted into structured criteria (hard constraints vs. soft preferences).</li>
+      <li><b>Technical requirement mapping</b>Which specs matter — and how much — is derived from your purposes. A gaming shopper and a programming student get different weight profiles automatically.</li>
+      <li><b>Candidate discovery</b>The Search Provider returns devices matching your device type. When a search connector is available, this calls its real <span class="mono">web_search</span> tool against the live web; otherwise it reads the sample catalog.</li>
+      <li><b>Specification &amp; price extraction</b>For live results, <span class="mono">web_fetch</span> pulls the actual page content and an AI extraction step (constrained to only what's stated in the text) turns it into structured specs — any field the source didn't mention comes back as "Unable to verify currently," never guessed.</li>
+      <li><b>Hard-constraint filtering</b>Candidates over budget (beyond your stated tolerance), missing a required GPU, below a minimum RAM, or from an excluded brand are removed before scoring. Fields that couldn't be verified are never used to silently exclude a candidate.</li>
+      <li><b>Weighted scoring</b>Remaining candidates are scored against your blended weight profile and ranked; unverified fields score at a neutral midpoint rather than being assumed favorable.</li>
+      <li><b>Explanation generation</b>Each of your top 5 gets a personalized explanation grounded only in the facts computed above — never inventing a spec or price.</li>
+    </ol>
+
+    <h3>Architecture</h3>
+    <div class="arch-diagram">
+      <pre class="mermaid">
+flowchart TD
+  A[Search Provider] --> B[Product Discovery]
+  B --> C[Specification Extraction]
+  C --> D[Source Verification]
+  D --> E[Normalization]
+  E --> F[Recommendation Engine]
+  F --> G[AI Explanation]
+  G --> H[User Interface]
+      </pre>
+    </div>
+    <p>The <span class="mono">SearchProvider</span> / live-research path in the client code is the seam a different backend plugs into — swap the connector, or add manufacturer/retailer APIs, and the wizard, scoring engine and UI keep working unchanged.</p>
+
+    <h3>What TechMatch AI will not do</h3>
+    <p>It won't invent a specification, price, availability status or source. When something can't be verified — live or sample — it says so rather than filling the gap. It also never hides meaningful drawbacks to make a product look better than it is, and live results always link back to the real page they came from so you can double-check before buying.</p>
+  </section>`;
+  if(window.mermaid){ try{ window.mermaid.init(undefined, app.querySelectorAll('.mermaid')); }catch(e){} }
+}
+
+/* ---------------------------- ADMIN --------------------------------- */
+function renderAdmin(app){
+  const total = SAMPLE_PRODUCTS.length;
+  const stale = SAMPLE_PRODUCTS.filter(p=> (NOW - new Date(p.verifiedAt))/86400000 > 3).length;
+  const modeLabel = {live:'Live search', 'sample-fallback':'Sample (live search failed)', sample:'Sample'}[state.lastDataMode] || '—';
+  app.innerHTML = `
+  <section>
+    <h2>System status</h2>
+    <p>An illustrative admin view of what a live deployment would monitor.</p>
+    <div class="admin-grid">
+      <div class="admin-stat"><div class="num">${mcpCap?'Connected':'Not connected'}</div><div class="lbl">Parallel Search connector</div></div>
+      <div class="admin-stat"><div class="num">${modeLabel}</div><div class="lbl">Last recommendation data source</div></div>
+      <div class="admin-stat"><div class="num">${total}</div><div class="lbl">Sample catalog size</div></div>
+      <div class="admin-stat"><div class="num">${claudeSample?'On':'Off'}</div><div class="lbl">AI explanation / extraction layer</div></div>
+    </div>
+    ${state.lastLiveError?`<div class="sample-banner"><span>⚠</span><div><b>Last live search error:</b> ${escapeHtml(state.lastLiveError.code||'unknown')} — ${escapeHtml(state.lastLiveError.message||'no message')}</div></div>`:''}
+    <h3>Sample catalog verification status</h3>
+    <table class="admin-table">
+      <thead><tr><th>Product</th><th>Price confidence</th><th>Spec confidence</th><th>Availability</th><th>Last verified</th></tr></thead>
+      <tbody>
+        ${SAMPLE_PRODUCTS.map(p=>`<tr>
+          <td>${escapeHtml(p.name)}</td>
+          <td><span class="status-dot ${p.confidence.price==='high'?'ok':(p.confidence.price==='medium'?'warn':'fail')}"></span>${p.confidence.price}</td>
+          <td><span class="status-dot ${p.confidence.spec==='high'?'ok':(p.confidence.spec==='medium'?'warn':'fail')}"></span>${p.confidence.spec}</td>
+          <td>${p.availability}</td>
+          <td>${fmtTime(p.verifiedAt)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </section>`;
+}
+
+/* ---------------------------- CHAT --------------------------------- */
+function renderChat(app){
+  app.innerHTML = `
+  <section>
+    <h2>Chat with TechMatch AI</h2>
+    <p>Describe what you need in your own words — this uses the same requirement and scoring engine as the wizard.</p>
+    <div class="chat-shell">
+      <div class="chat-log" id="chatLog"></div>
+      <div class="typing" id="chatTyping" style="display:none;">TechMatch AI is thinking…</div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="e.g. I need a laptop for college and gaming. My budget is 70k.">
+        <button class="btn-primary" id="chatSend">Send</button>
+      </div>
+    </div>
+  </section>`;
+  const log = document.getElementById('chatLog');
+  function paintLog(){
+    log.innerHTML = state.chatHistory.map(m=>`<div class="msg ${m.role}">${m.html || escapeHtml(m.text)}</div>`).join('');
+    log.scrollTop = log.scrollHeight;
+  }
+  if(!state.chatHistory.length){
+    state.chatHistory.push({role:'bot', text:"Tell me what you need it for and your budget — e.g. \"I need a laptop for college and gaming, budget ₹70,000.\""});
+  }
+  paintLog();
+  const input = document.getElementById('chatInput');
+  document.getElementById('chatSend').onclick = sendChat;
+  input.onkeydown = e=>{ if(e.key==='Enter') sendChat(); };
+  async function sendChat(){
+    const text = input.value.trim();
+    if(!text) return;
+    state.chatHistory.push({role:'user', text});
+    input.value=''; paintLog();
+    document.getElementById('chatTyping').style.display='block';
+    const req = chatReqFromHistory();
+    const ai = await aiReason({
+      task:'You are chatting with a shopper. Given their accumulated stated requirements as JSON, ask ONE short clarifying question OR, if you already have device type + budget + at least one purpose, say you are pulling up recommendations now. Keep it to one or two sentences, conversational, no markdown.',
+      facts:req
+    });
+    document.getElementById('chatTyping').style.display='none';
+    const reply = ai || chatFallbackReply(req);
+    state.chatHistory.push({role:'bot', text:reply});
+    paintLog();
+    if(req.deviceType && req.budgetMax && req.purposes.length){
+      state.wizard = {deviceType:req.deviceType, budgetMax:req.budgetMax, budgetMin:null, overBudgetToggle:false, overBudgetPct:10, purposes:req.purposes, nlText:req.rawText, adv:{}};
+      setTimeout(()=> runResearch(), 600);
+    }
+  }
+  function chatReqFromHistory(){
+    const rawText = state.chatHistory.filter(m=>m.role==='user').map(m=>m.text).join('. ');
+    const lower = rawText.toLowerCase();
+    const deviceType = /desktop|\bpc\b|tower/.test(lower) ? 'desktop' : (/laptop|notebook/.test(lower)?'laptop':null);
+    const budgetMatch = lower.match(/(\d{2,3})\s*k\b/) || lower.match(/₹?\s?(\d{4,7})/);
+    let budgetMax = null;
+    if(budgetMatch){ budgetMax = budgetMatch[1].length<=3 ? parseInt(budgetMatch[1])*1000 : parseInt(budgetMatch[1]); }
+    const purposes = Object.keys(PURPOSE_META).filter(k=> lower.includes(k.replace('-', ' ')) || lower.includes(PURPOSE_META[k].label.toLowerCase()));
+    if(/gaming|game/.test(lower) && !purposes.includes('gaming')) purposes.push('gaming');
+    if(/college|student/.test(lower) && !purposes.includes('student')) purposes.push('student');
+    if(/programming|code|coding|developer/.test(lower) && !purposes.includes('programming')) purposes.push('programming');
+    return {deviceType, budgetMax, purposes, rawText};
+  }
+  function chatFallbackReply(req){
+    if(!req.deviceType) return "Are you looking for a laptop or a desktop PC?";
+    if(!req.budgetMax) return "Got it — what's your budget, roughly?";
+    if(!req.purposes.length) return "What will you mainly use it for — gaming, programming, college work, something else?";
+    return "Got it — pulling up your recommendations now.";
+  }
+}
+
+/* ---------------------------- misc --------------------------------- */
+function emptyState(title, body, action, actionLabel){
+  return `<section><div class="empty-state"><h3>${title}</h3><p>${body}</p>${action?`<button class="btn-primary" onclick="${action}">${actionLabel}</button>`:''}</div></section>`;
+}
+
+/* ---------------------------- boot --------------------------------- */
+render();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>if(window.mermaid){ mermaid.initialize({startOnLoad:false, theme:'neutral'}); }</script>
+</body>
+</html>
