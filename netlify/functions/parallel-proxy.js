@@ -4,18 +4,7 @@
 // The browser never sees PARALLEL_API_KEY — only this function does,
 // read from a Netlify environment variable at request time.
 //
-// Called by index.html's mcpCap.callTool(server, tool, args) fallback with:
-//   POST body: { tool: "web_search" | "web_fetch", args: {...} }
-// matching techmatch's existing liveWebSearch()/liveWebFetch() argument
-// shapes exactly, so no other app code had to change.
-//
-// tool "web_search"  -> Parallel's POST /v1/search
-// tool "web_fetch"   -> Parallel's POST /v1/extract
-//
-// On success: returns Parallel's JSON response body as-is (status 200).
-// On failure: returns { error: { code, message } } with a matching HTTP
-// status, which the frontend turns into the app's existing honest
-// "showing sample data instead" fallback.
+// POST body: { tool: "web_search" | "web_fetch", args: {...} }
 
 const PARALLEL_API_KEY = process.env.PARALLEL_API_KEY;
 
