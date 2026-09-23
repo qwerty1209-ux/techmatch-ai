@@ -23,6 +23,46 @@ function json(statusCode, obj) {
   };
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Calls Gemini, and if it comes back with a 503 ("high demand" — a transient
+// overload, not a real problem), waits briefly and tries once more before
+// giving up. This is the difference between one busy moment sinking an
+// entire live-search attempt vs. quietly recovering from it.
+async function callGeminiWithRetry(prompt) {
+  const maxAttempts = 2;
+  let last = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const upstream = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': GEMINI_API_KEY,
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+        }),
+      }
+    );
+    const data = await upstream.json().catch(() => ({}));
+    if (upstream.ok) {
+      return { ok: true, status: upstream.status, data };
+    }
+    last = { ok: false, status: upstream.status, data };
+    if (upstream.status === 503 && attempt < maxAttempts) {
+      console.log('[ai-proxy] 503 high demand, retrying in 700ms (attempt ' + attempt + ')');
+      await sleep(700);
+      continue;
+    }
+    return last;
+  }
+  return last;
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return json(405, { error: 'Use POST.' });
@@ -51,29 +91,16 @@ exports.handler = async (event) => {
     : input;
 
   try {
-    const upstream = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-goog-api-key': GEMINI_API_KEY,
-        },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-        }),
-      }
-    );
-    const data = await upstream.json().catch(() => ({}));
-    if (!upstream.ok) {
-      console.error('[ai-proxy] upstream error', upstream.status, JSON.stringify(data).slice(0, 500));
-      return json(upstream.status, {
-        error: (data && data.error && data.error.message) || 'Gemini API request failed.',
+    const result = await callGeminiWithRetry(prompt);
+    if (!result.ok) {
+      console.error('[ai-proxy] upstream error', result.status, JSON.stringify(result.data).slice(0, 500));
+      return json(result.status, {
+        error: (result.data && result.data.error && result.data.error.message) || 'Gemini API request failed.',
       });
     }
-    console.log('[ai-proxy] upstream ok, status', upstream.status);
+    console.log('[ai-proxy] upstream ok, status', result.status);
 
-    const candidate = (data.candidates || [])[0];
+    const candidate = (result.data.candidates || [])[0];
     const text = ((candidate && candidate.content && candidate.content.parts) || [])
       .map((p) => p.text || '')
       .join('')
@@ -81,7 +108,7 @@ exports.handler = async (event) => {
 
     if (!text) {
       const reason = candidate && candidate.finishReason;
-      console.error('[ai-proxy] no text in response, finishReason:', reason, JSON.stringify(data).slice(0, 500));
+      console.error('[ai-proxy] no text in response, finishReason:', reason, JSON.stringify(result.data).slice(0, 500));
       return json(502, { error: 'Gemini returned no text' + (reason ? ' (' + reason + ').' : '.') });
     }
 
